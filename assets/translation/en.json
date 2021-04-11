@@ -1,0 +1,43 @@
+
+{
+  "title": "Choose",
+  "subtitle1": "The",
+  "subtitle2": "Products",
+
+  "title2": "Add favourite",
+  "subtitle12": "Product to",
+  "subtitle22": "Cart",
+
+  "title3": "Choose your",
+  "subtitle13": "Payment",
+  "subtitle23": "Option",
+
+  "title4": "Choose",
+  "subtitle14": "The Best",
+  "subtitle24": "Shipping",
+
+  "skip": "Skip",
+  "welcome": "Welcome",
+  "signInTitle": "Sign in to get started and experience great shopping deals",
+  "userName": "Username",
+  "userNameError": "user name must not be empty",
+  "email": "E-mail",
+  "emailError": "email must not be empty",
+
+  "phone": "Phone",
+  "phoneError": "phone must not be empty",
+  "member": "Already have an account",
+  "passError": "Password name must not be empty",
+  "password": "Password",
+  "signIn": "SIGN IN",
+  "newAccount": "Don't have an account?",
+  "signUp": "SIGN UP",
+  "salla": "Salla",
+  "discover": "Discover",
+  "newArrival":"New Arrival",
+  "home": "Home",
+  "cart": "Cart",
+  "categories": "Categories",
+  "settings": "Settings",
+  "sale": "Sale"
+}

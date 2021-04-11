@@ -32,6 +32,12 @@ dependencies:
   shared_preferences: ^2.0.5
   get_it: ^6.0.0
   carousel_slider: ^3.0.0
+  hexcolor: ^2.0.3
+  flutter_page_transition: ^0.1.6
+  image_picker: 0.6.7+22
+  loading_animations: ^2.1.0
+  flutter_staggered_grid_view: ^0.3.4
+  persistent_bottom_nav_bar: ^4.0.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -52,6 +58,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/translation/
+    - assets/images/
+
   fonts:
     - family: jannah
       fonts:
