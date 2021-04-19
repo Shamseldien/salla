@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salla/models/banners_model/banner_model.dart';
+import 'package:salla/models/cart/cart_model.dart';
 import 'package:salla/models/categories_model/categories_model.dart';
 import 'package:salla/models/favorites/favorites_model.dart';
 import 'package:salla/models/home_model/home_models.dart';
+import 'package:salla/modules/cart/cart.dart';
+import 'package:salla/modules/categories/categories.dart';
 import 'package:salla/modules/home/home.dart';
 import 'package:salla/modules/settings/settings.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
@@ -50,18 +52,33 @@ AppLanguageModel appLanguageModel;
   }
 
 
-  BannersModel bannersModel;
   CategoriesModel categoriesModel;
   HomeModel homeModel;
   FavoritesModel favoriteModel;
+  CartModel cartModel;
+  int cartProductsNumber=0;
+  Map<int,bool>inCart={};
+  Map<int,bool>inFav={};
+  List<Color> bottomColors=[
+    Colors.deepOrangeAccent,
+    Colors.teal,
+    Colors.deepPurple,
+    Colors.orange,
+
+  ];
 
 
+  int currentIndex=0;
+  void changeIndex(index){
+    currentIndex = index;
+    emit(ChangeIndex());
+  }
   void getCategories() {
-    //  emit(HomeLoadingState());
+     emit(AppStateLoading());
     repository.getCategories().then((value){
       categoriesModel = CategoriesModel.fromJson(value.data);
       print(categoriesModel.status);
-      emit(AppStateSuccess());
+     //emit(AppStateSuccess());
     }).catchError((error){
       print(error.toString());
       emit(AppStateError(error));
@@ -69,18 +86,23 @@ AppLanguageModel appLanguageModel;
   }
   List<Widget> pages = [
     HomeScreen(),
-    Center(child: Text('category')),
-    Center(child: Text('cart')),
+    CategoriesScreen(),
+    CartScreen(),
     SettingsScreen(),
 
   ];
 
   void getHomeData() {
-    //  emit(HomeLoadingState());
+    //  emit(AppStateLoading());
     repository.getHomeData(token: userToken).then((value){
       print(userToken);
       homeModel = HomeModel.fromJson(value.data);
-      print(homeModel.status);
+      homeModel.data.products.forEach((element) {
+          inCart.addAll({element.id: element.inCart});
+          inFav.addAll({element.id:element.inFavorites});
+          if(element.inCart)
+            cartProductsNumber++;
+      });
       emit(AppStateSuccess());
     }).catchError((error){
       print(error.toString());
@@ -88,12 +110,61 @@ AppLanguageModel appLanguageModel;
     });
   }
 
+  void addOrRemoveFavorite({id}){
+    inFav[id]=!inFav[id];
+    emit(CartLoadingState());
+    repository.addOrRemoveFav(
+      token: userToken,
+      id: id,
+    ).then((value){
+      cartModel=CartModel.fromJson(value.data);
+      if(!cartModel.status){
+        inFav[id]=!inFav[id];
+      }
+      emit(AddToOrRemoveCartState());
+    }).catchError((error){
+      inFav[id]=!inFav[id];
+      print(error);
+      emit(CartErrorState(error));
+    });
+  }
+
+
+  void addOrRemoveCart({id}){
+     changeLocalCart(id);
+    emit(CartLoadingState());
+    repository.addOrRemoveCart(
+     token: userToken,
+      id: id,
+    ).then((value){
+      cartModel=CartModel.fromJson(value.data);
+      if(!cartModel.status){
+        changeLocalCart(id);
+      }
+
+      emit(AddToOrRemoveCartState());
+    }).catchError((error){
+      changeLocalCart(id);
+      print(error);
+      emit(CartErrorState(error));
+    });
+  }
+
+  void changeLocalCart(id){
+    inCart[id]=!inCart[id];
+    if(inCart[id]){
+      cartProductsNumber++;
+    }else{
+      cartProductsNumber--;
+    }
+  }
+
   void getFavorites() {
     //  emit(HomeLoadingState());
     repository.getFavorite(token: userToken).then((value){
       print(userToken);
       favoriteModel = FavoritesModel.fromJson(value.data);
-      emit(AppStateSuccess());
+     // emit(AppStateSuccess());
     }).catchError((error){
       print(error.toString());
       emit(AppStateError(error));

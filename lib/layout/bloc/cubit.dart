@@ -8,17 +8,6 @@ class HomeLayoutCubit extends Cubit<HomeLayoutStates>{
   HomeLayoutCubit() : super(HomeLayoutInitState());
   static HomeLayoutCubit get(context)=>BlocProvider.of(context);
 
-  int currentIndex=0;
- List<Widget> pages = [
-   HomeScreen(),
-   Center(child: Text('category')),
-   Center(child: Text('cart')),
-   SettingsScreen(),
 
- ];
-  void changeIndex(index){
-    currentIndex = index;
-    emit(ChangeIndex());
-  }
 
 }

@@ -17,6 +17,7 @@ TextStyle black22() => TextStyle(fontSize: 22);
 TextStyle white14() => TextStyle(fontSize: 14, color: Colors.white);
 
 TextStyle white12() => TextStyle(fontSize: 12, color: Colors.white);
+TextStyle white10() => TextStyle(fontSize: 10, color: Colors.white);
 
 TextStyle white16() => TextStyle(fontSize: 16, color: Colors.white);
 
@@ -40,12 +41,6 @@ TextStyle grey22() => TextStyle(fontSize: 22, color: Colors.grey);
 
 ThemeData lightThem() => ThemeData(
       fontFamily: 'jannah',
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedItemColor:btnColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.shifting,
-        elevation: 0,
-      ),
       appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
         iconTheme: IconThemeData(
@@ -60,5 +55,8 @@ ThemeData lightThem() => ThemeData(
         ),
         elevation: 0
       ),
+
   scaffoldBackgroundColor: Colors.white,
+
+
     );

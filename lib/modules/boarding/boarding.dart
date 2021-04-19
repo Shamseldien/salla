@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:salla/models/board_model/board_model.dart';
+import 'package:salla/models/board/board_model.dart';
 import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/components/components.dart';

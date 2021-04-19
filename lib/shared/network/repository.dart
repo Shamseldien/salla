@@ -17,10 +17,13 @@ abstract class Repository {
     @required String password,
   });
 
-  Future<Response>getBanner();
   Future<Response>getCategories();
   Future<Response>getHomeData({token});
   Future<Response>getFavorite({token});
+  Future<Response>addOrRemoveCart({token,id});
+  Future<Response>addOrRemoveFav({token,id});
+  Future<Response>getSingleCategory({token,id});
+  Future<Response>getProductInfo({token,id});
 }
 
 class RepositoryImplementation extends Repository {
@@ -47,10 +50,6 @@ class RepositoryImplementation extends Repository {
    });
   }
 
-  @override
-  Future<Response> getBanner() async{
-    return await dioHelper.getData(url: BANNER_END_POINT);
-  }
 
   @override
   Future<Response> getCategories()async {
@@ -65,5 +64,43 @@ class RepositoryImplementation extends Repository {
   @override
   Future<Response> getFavorite({token}) async{
     return await dioHelper.getData(url: FAVORITE_END_POINT,token: token);
+  }
+
+  @override
+  Future<Response> addOrRemoveCart({token,id}) async{
+    return await dioHelper.postData(
+        url: CART_END_POINT,
+        data: {
+          'product_id':id
+        },
+        token: token);
+  }
+
+  @override
+  Future<Response> addOrRemoveFav({token, id}) async{
+    return await dioHelper.postData(
+        url: FAVORITE_END_POINT,
+        data: {
+          'product_id':id
+        },
+        token: token);
+  }
+
+  @override
+  Future<Response> getSingleCategory({token, id})async {
+    return await dioHelper.getData(
+        url: SINGLE_CATEGORY_POINT,
+        query: {
+          'category_id':id
+        },
+        token: token);
+  }
+
+  @override
+  Future<Response> getProductInfo({token, id}) async{
+    return await dioHelper.getData(
+        url: '$PRODUCT_INFO_POINT/$id',
+        token: token);
+
   }
 }

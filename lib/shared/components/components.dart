@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +6,14 @@ import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:salla/models/board_model/board_model.dart';
+import 'package:salla/models/board/board_model.dart';
+import 'package:salla/models/categories_model/categories_model.dart';
+import 'package:salla/models/home_model/home_models.dart';
 import 'package:salla/modules/authentication/bloc/cubit.dart';
 import 'package:salla/modules/authentication/bloc/states.dart';
 import 'package:salla/modules/boarding/boarding.dart';
+import 'package:salla/modules/product_info/product_info.dart';
+import 'package:salla/modules/single_category/single_category.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/language/language_model.dart';
@@ -58,6 +63,186 @@ enum toastMessagesColors {
   WARNING,
 }
 
+Widget productItem({context, Products product,index,})=>InkWell(
+  onTap: (){
+    navigateTo(context: context, widget: ProductInfo(id: product.id,));
+  },
+
+  child:   Container(
+    decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+            color: Colors.grey[200]
+        ),
+        borderRadius: BorderRadius.circular(10.0)
+    ),
+    child:Column(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                )
+            ),
+            child: Stack(
+              children: [
+                Container(
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10.0),
+                        topLeft: Radius.circular(10.0),
+                      )
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          topLeft: Radius.circular(10.0),
+                        )
+                    ),
+                    child: Image(
+                      image: NetworkImage(
+                          product.image),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10.0),
+                        topLeft: Radius.circular(10.0),
+                      )
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.end,
+                      children: [
+
+                        CircleAvatar(
+                            backgroundColor:Colors.grey[200].withOpacity(.8),
+                            child: IconButton(
+                                icon: Icon(
+                                  AppCubit.get(context).inCart[product.id]?Icons.shopping_bag:
+                                  Icons.shopping_bag_outlined,
+                                  color: AppCubit.get(context).inCart[product.id]?btnColor:Colors.blueGrey,
+                                ),
+                                onPressed: () {
+                                  AppCubit.get(context).addOrRemoveCart(
+                                      id: product.id,
+
+                                  );
+                                })),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircleAvatar(
+                            backgroundColor:Colors.grey[200].withOpacity(.8),
+                            child: IconButton(
+                                icon: Icon(
+                                  AppCubit.get(context).inFav[product.id]?Icons.favorite:
+                                  Icons.favorite_border_outlined,
+                                  color: AppCubit.get(context).inFav[product.id]?btnColor:Colors.blueGrey,
+                                ),
+                                onPressed: () {
+                                  AppCubit.get(context).addOrRemoveFavorite(
+                                    id: product.id,
+                                  );
+                                })),
+                      ],
+                    ),
+                  ),
+                ),
+                if(product.discount>0)
+                  Align(
+                    alignment: AlignmentDirectional.bottomStart,
+                    child: Container(
+                      padding: EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(appLang(context).sale,style: white12(),),
+                          SizedBox(width: 3,),
+                          Text('${product.discount.toString()}%',style: white12(),),
+                        ],
+                      ),
+                    ),
+                  )
+              ],
+            ),
+          ),
+        ),
+        Container(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style:
+                  black14().copyWith(height: 1.5),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  '${product.price.toString()} SAR',
+                  style: black14()
+                      .copyWith(color: Colors.blue),
+                ),
+                if( product.oldPrice>0)
+                  Text(
+                    '${product.oldPrice.toString()} SAR',
+                    style: black12().copyWith(
+                        color: Colors.grey,
+                        decoration:
+                        TextDecoration.lineThrough,
+                        height: 1.2),
+                  ),
+              ],
+            ),
+          ),
+        )
+      ],
+    ),
+  ),
+);
+Widget categoryWidget({ProductData model,context})=>InkWell(
+  onTap: (){
+    print(model.id);
+    navigateTo(context: context, widget: SingleCategory(catName: model.name,id: model.id,));
+  },
+  child:   Container(
+    height: 90,
+    child:Center(
+      child: ListTile(
+        title: Text(model.name),
+        trailing: Icon(Icons.arrow_forward_ios_rounded),
+        leading: Container(
+          height: 90,
+          width: 100,
+          child: Image(
+            fit: BoxFit.cover,
+            image: NetworkImage('${model.image}'),
+          ),
+        ),
+      ),
+    ),
+  ),
+);
 Color setToastColor(toastMessagesColors color) {
   Color c;
   switch (color) {

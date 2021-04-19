@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/layout/bloc/cubit.dart';
 import 'package:salla/layout/home_layout.dart';
 import 'package:salla/modules/authentication/login/login.dart';
-import 'package:salla/modules/home/bloc/cubit.dart';
 import 'package:salla/modules/select_laguage/select_lang.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
@@ -48,8 +47,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context)=>di<AppCubit>()..setAppLanguage(
             translationFile: transFile,
             code: code
-        )..getCategories()..getHomeData()..getFavorites()),
-        BlocProvider(create: (context)=>di<HomeCubit>()),
+        )..getCategories()..getHomeData()),
       ],
       child: BlocConsumer<AppCubit,AppStates>(
           listener: (context,state){},

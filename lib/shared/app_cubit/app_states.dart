@@ -9,3 +9,18 @@ class AppStateError extends AppStates{
 class AppStateSelectLang extends AppStates{}
 class AppStateStatusBarColor extends AppStates{}
 class AppSetLanguageState extends AppStates{}
+class ChangeIndex extends AppStates{}
+
+
+class AddToOrRemoveCartState extends AppStates{}
+class CartLoadingState extends AppStates{}
+class CartErrorState extends AppStates{
+  var error;
+  CartErrorState(this.error);
+}
+class AddToOrRemoveFavState extends AppStates{}
+class FavLoadingState extends AppStates{}
+class FavErrorState extends AppStates{
+  var error;
+  FavErrorState(this.error);
+}
