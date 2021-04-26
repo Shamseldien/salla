@@ -6,6 +6,7 @@ import 'package:salla/models/single_category/single_cat_model.dart';
 import 'package:salla/modules/product_info/product_info.dart';
 import 'package:salla/modules/single_category/bloc/cubit.dart';
 import 'package:salla/modules/single_category/bloc/states.dart';
+import 'package:salla/modules/single_category/single_category.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/components.dart';
@@ -73,12 +74,12 @@ class SingleCategory extends StatelessWidget {
   }
 
   Widget singleCatItems({Products product,index,context})=>InkWell(
-   onTap: () {
-     navigateTo(context: context, widget: ProductInfo(id: product.id,));
-   },
+    onTap: () {
+      navigateTo(context: context, widget: ProductInfo(id: product.id,));
+    },
     child: Container(
       decoration: BoxDecoration(
-         // color: Colors.white,
+        // color: Colors.white,
           border: Border.all(
               color: Colors.grey[200]
           ),
@@ -110,67 +111,67 @@ class SingleCategory extends StatelessWidget {
                             topRight: Radius.circular(10.0),
                             topLeft: Radius.circular(10.0),
                           ),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              product.image),
-                        )
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                product.image),
+                          )
 
                       ),
                     ),
                   ),
                   Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10.0),
-                          topLeft: Radius.circular(10.0),
-                        )
-                    ),
-                    child:BlocConsumer<AppCubit,AppStates>(
-                      listener: (context,state){},
-                      builder: (context,state){
-                        return  Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.end,
-                            children: [
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0),
+                          )
+                      ),
+                      child:BlocConsumer<AppCubit,AppStates>(
+                        listener: (context,state){},
+                        builder: (context,state){
+                          return  Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.end,
+                              children: [
 
-                              CircleAvatar(
-                                  backgroundColor:Colors.grey[200].withOpacity(.8),
-                                  child: IconButton(
-                                      icon: Icon(
-                                        AppCubit.get(context).inCart[product.id]?Icons.shopping_bag:
-                                        Icons.shopping_bag_outlined,
-                                        color: AppCubit.get(context).inCart[product.id]?btnColor:Colors.blueGrey,
-                                      ),
-                                      onPressed: () {
-                                        AppCubit.get(context).addOrRemoveCart(
-                                          id: product.id,
+                                CircleAvatar(
+                                    backgroundColor:Colors.grey[200].withOpacity(.8),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          AppCubit.get(context).inCart[product.id]?Icons.shopping_bag:
+                                          Icons.shopping_bag_outlined,
+                                          color: AppCubit.get(context).inCart[product.id]?btnColor:Colors.blueGrey,
+                                        ),
+                                        onPressed: () {
+                                          AppCubit.get(context).addOrRemoveCart(
+                                            id: product.id,
 
-                                        );
-                                      })),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              CircleAvatar(
-                                  backgroundColor:Colors.grey[200].withOpacity(.8),
-                                  child: IconButton(
-                                      icon: Icon(
-                                        AppCubit.get(context).inFav[product.id]?Icons.favorite:
-                                        Icons.favorite_border_outlined,
-                                        color: AppCubit.get(context).inFav[product.id]?btnColor:Colors.blueGrey,
-                                      ),
-                                      onPressed: () {
-                                        AppCubit.get(context).addOrRemoveFavorite(
-                                          id: product.id,
-                                        );
-                                      })),
-                            ],
-                          ),
-                        );
-                      },
-                    )
+                                          );
+                                        })),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                CircleAvatar(
+                                    backgroundColor:Colors.grey[200].withOpacity(.8),
+                                    child: IconButton(
+                                        icon: Icon(
+                                          AppCubit.get(context).inFav[product.id]?Icons.favorite:
+                                          Icons.favorite_border_outlined,
+                                          color: AppCubit.get(context).inFav[product.id]?btnColor:Colors.blueGrey,
+                                        ),
+                                        onPressed: () {
+                                          AppCubit.get(context).addOrRemoveFavorite(
+                                            id: product.id,
+                                          );
+                                        })),
+                              ],
+                            ),
+                          );
+                        },
+                      )
                   ),
                   if(product.discount>0)
                     Align(
@@ -234,4 +235,5 @@ class SingleCategory extends StatelessWidget {
       ),
     ),
   );
+
 }

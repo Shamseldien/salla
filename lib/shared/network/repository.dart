@@ -24,6 +24,8 @@ abstract class Repository {
   Future<Response>addOrRemoveFav({token,id});
   Future<Response>getSingleCategory({token,id});
   Future<Response>getProductInfo({token,id});
+  Future<Response>updateCart({token,id,quantity});
+  Future<Response>getCartInfo({token});
 }
 
 class RepositoryImplementation extends Repository {
@@ -79,7 +81,7 @@ class RepositoryImplementation extends Repository {
   @override
   Future<Response> addOrRemoveFav({token, id}) async{
     return await dioHelper.postData(
-        url: FAVORITE_END_POINT,
+        url: ADD_FAVORITE_END_POINT,
         data: {
           'product_id':id
         },
@@ -102,5 +104,24 @@ class RepositoryImplementation extends Repository {
         url: '$PRODUCT_INFO_POINT/$id',
         token: token);
 
+  }
+
+  @override
+  Future<Response> getCartInfo({token})async {
+    return await dioHelper.getData(
+        url: CART_END_POINT,
+        token: token
+    );
+  }
+
+  @override
+  Future<Response> updateCart({token, id,quantity})async {
+    return await dioHelper.putData(
+        url: '$CART_END_POINT/$id',
+        token: token,
+        data: {
+          'quantity':quantity
+        }
+        );
   }
 }

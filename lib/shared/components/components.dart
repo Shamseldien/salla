@@ -15,6 +15,7 @@ import 'package:salla/modules/boarding/boarding.dart';
 import 'package:salla/modules/product_info/product_info.dart';
 import 'package:salla/modules/single_category/single_category.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
+import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/language/language_model.dart';
 import 'package:salla/shared/style/colors.dart';
@@ -62,7 +63,6 @@ enum toastMessagesColors {
   ERROR,
   WARNING,
 }
-
 Widget productItem({context, Products product,index,})=>InkWell(
   onTap: (){
     navigateTo(context: context, widget: ProductInfo(id: product.id,));

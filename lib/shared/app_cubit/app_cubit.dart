@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salla/models/cart/cart_model.dart';
+import 'package:salla/models/add_cart/cart_model.dart';
+import 'package:salla/models/cart/my_cart_model.dart';
 import 'package:salla/models/categories_model/categories_model.dart';
-import 'package:salla/models/favorites/favorites_model.dart';
+import 'package:salla/models/add_favorites/favorites_model.dart';
+import 'package:salla/models/favorites/my_favorites_model.dart';
 import 'package:salla/models/home_model/home_models.dart';
 import 'package:salla/modules/cart/cart.dart';
 import 'package:salla/modules/categories/categories.dart';
@@ -55,8 +57,11 @@ AppLanguageModel appLanguageModel;
   CategoriesModel categoriesModel;
   HomeModel homeModel;
   FavoritesModel favoriteModel;
+  MyFavoritesModel myFavoritesModel;
   CartModel cartModel;
+  MyCartModel myCartModel;
   int cartProductsNumber=0;
+  int favProductsNumber=0;
   Map<int,bool>inCart={};
   Map<int,bool>inFav={};
   List<Color> bottomColors=[
@@ -102,6 +107,9 @@ AppLanguageModel appLanguageModel;
           inFav.addAll({element.id:element.inFavorites});
           if(element.inCart)
             cartProductsNumber++;
+
+          if(element.inFavorites)
+            favProductsNumber++;
       });
       emit(AppStateSuccess());
     }).catchError((error){
@@ -111,21 +119,22 @@ AppLanguageModel appLanguageModel;
   }
 
   void addOrRemoveFavorite({id}){
-    inFav[id]=!inFav[id];
-    emit(CartLoadingState());
+    changeLocalFav(id);
+    emit(FavLoadingState());
     repository.addOrRemoveFav(
       token: userToken,
       id: id,
     ).then((value){
-      cartModel=CartModel.fromJson(value.data);
-      if(!cartModel.status){
-        inFav[id]=!inFav[id];
+      favoriteModel=FavoritesModel.fromJson(value.data);
+      if(!favoriteModel.status){
+        changeLocalFav(id);
       }
-      emit(AddToOrRemoveCartState());
+      getFavorites();
+      emit(AddToOrRemoveFavState());
     }).catchError((error){
-      inFav[id]=!inFav[id];
+      changeLocalFav(id);
       print(error);
-      emit(CartErrorState(error));
+      emit(FavErrorState(error));
     });
   }
 
@@ -141,12 +150,41 @@ AppLanguageModel appLanguageModel;
       if(!cartModel.status){
         changeLocalCart(id);
       }
-
+      getCartInfo();
       emit(AddToOrRemoveCartState());
     }).catchError((error){
       changeLocalCart(id);
       print(error);
       emit(CartErrorState(error));
+    });
+  }
+
+  void updateCart({id,int quantity}){
+    emit(UpdateCartLoadingState());
+    print(userToken);
+    repository.updateCart(
+      token: userToken,
+      id: id,
+      quantity: quantity
+
+    ).then((value){
+      print(value.data);
+      getCartInfo();
+    }).catchError((error){
+      print(error);
+      emit(CartErrorState(error));
+    });
+  }
+  void getCartInfo(){
+    emit(GetCartInfoLoading());
+    repository.getCartInfo(
+      token: userToken,
+    ).then((value){
+      myCartModel=MyCartModel.fromJson(value.data);
+      emit(GetCartInfoSuccess());
+    }).catchError((error){
+      print(error);
+      emit(GetCartInfoError(error));
     });
   }
 
@@ -159,12 +197,21 @@ AppLanguageModel appLanguageModel;
     }
   }
 
+
+  void changeLocalFav(id){
+    inFav[id]=!inFav[id];
+    if(inFav[id]){
+      favProductsNumber++;
+    }else{
+      favProductsNumber--;
+    }
+  }
+
   void getFavorites() {
     //  emit(HomeLoadingState());
     repository.getFavorite(token: userToken).then((value){
-      print(userToken);
-      favoriteModel = FavoritesModel.fromJson(value.data);
-     // emit(AppStateSuccess());
+      myFavoritesModel = MyFavoritesModel.fromJson(value.data);
+      emit(AppStateSuccess());
     }).catchError((error){
       print(error.toString());
       emit(AppStateError(error));

@@ -15,6 +15,12 @@ abstract class DioHelper {
     String token,
     dynamic query,
   });
+
+  Future<Response> putData({
+    @required String url,
+    @required dynamic data,
+    String token,
+  });
 }
 
 class DioImplementation extends DioHelper {
@@ -47,5 +53,16 @@ class DioImplementation extends DioHelper {
 
     return await dio.post(url,data: data,);
 
+  }
+
+  @override
+  Future<Response> putData({String url, data, String token}) async{
+    dio.options.headers = {
+      'Authorization': token ?? '',
+      'lang': appLanguage,
+      'Content-Type': 'application/json',
+    };
+
+    return await dio.put(url,data: data,);
   }
 }

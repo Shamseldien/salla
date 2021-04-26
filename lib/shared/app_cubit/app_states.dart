@@ -11,9 +11,17 @@ class AppStateStatusBarColor extends AppStates{}
 class AppSetLanguageState extends AppStates{}
 class ChangeIndex extends AppStates{}
 
+class GetCartInfoLoading extends AppStates{}
+class GetCartInfoSuccess extends AppStates{}
+class GetCartInfoError extends AppStates{
+  var error;
+  GetCartInfoError(this.error);
+}
+
 
 class AddToOrRemoveCartState extends AppStates{}
 class CartLoadingState extends AppStates{}
+class UpdateCartLoadingState extends AppStates{}
 class CartErrorState extends AppStates{
   var error;
   CartErrorState(this.error);

@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final favoritesModel = favoritesModelFromJson(jsonString);
+//     final myFavoritesModel = myFavoritesModelFromJson(jsonString);
 
 import 'dart:convert';
 
-FavoritesModel favoritesModelFromJson(String str) => FavoritesModel.fromJson(json.decode(str));
+MyFavoritesModel myFavoritesModelFromJson(String str) => MyFavoritesModel.fromJson(json.decode(str));
 
-String favoritesModelToJson(FavoritesModel data) => json.encode(data.toJson());
+String myFavoritesModelToJson(MyFavoritesModel data) => json.encode(data.toJson());
 
-class FavoritesModel {
-  FavoritesModel({
+class MyFavoritesModel {
+  MyFavoritesModel({
     this.status,
     this.message,
     this.data,
@@ -19,7 +19,7 @@ class FavoritesModel {
   dynamic message;
   Data data;
 
-  factory FavoritesModel.fromJson(Map<String, dynamic> json) => FavoritesModel(
+  factory MyFavoritesModel.fromJson(Map<String, dynamic> json) => MyFavoritesModel(
     status: json["status"],
     message: json["message"],
     data: Data.fromJson(json["data"]),
@@ -124,7 +124,7 @@ class Product {
   });
 
   int id;
-  int price;
+  double price;
   int oldPrice;
   int discount;
   String image;
@@ -133,7 +133,7 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
     id: json["id"],
-    price: json["price"],
+    price: json["price"].toDouble(),
     oldPrice: json["old_price"],
     discount: json["discount"],
     image: json["image"],

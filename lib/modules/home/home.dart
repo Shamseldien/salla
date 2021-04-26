@@ -31,6 +31,7 @@ class HomeScreen extends StatelessWidget {
                      height: 180,
                      autoPlay: true,
                      aspectRatio: 0.8,
+                   enlargeCenterPage: true
                    // enlargeCenterPage: true,
                    ),
                    itemBuilder: (context, index, realIdx) {

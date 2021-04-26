@@ -4,6 +4,7 @@ const BANNER_END_POINT = 'banners';
 const CATEGORIES_END_POINT = 'categories';
 const HOME_DATA_END_POINT = 'home';
 const FAVORITE_END_POINT = 'favorites';
+const ADD_FAVORITE_END_POINT = 'favorites';
 const CART_END_POINT = 'carts';
 const SINGLE_CATEGORY_POINT = 'products';
 const PRODUCT_INFO_POINT = 'products';

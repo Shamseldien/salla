@@ -1,10 +1,13 @@
+import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/layout/bloc/cubit.dart';
 import 'package:salla/layout/bloc/states.dart';
+import 'package:salla/modules/favorites/favorites.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
+import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/style/colors.dart';
@@ -21,13 +24,13 @@ class HomeLayout extends StatelessWidget {
         var cubit = AppCubit.get(context);
         return SafeArea(
           child: Scaffold(
-              appBar: cubit.currentIndex!=3
-                  ?AppBar(
+              appBar: cubit.currentIndex!=3 && AppCubit.get(context).myFavoritesModel!=null
+                  ? AppBar(
                 title: Row(
                   children: [
                     Text(appLang(context).salla),
                     SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
                     Expanded(
                       child: InkWell(
@@ -54,6 +57,38 @@ class HomeLayout extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
+                          navigateTo(context: context, widget: FavoritesScreen());
+                        },
+                        icon: Icon(Icons.favorite_outline,),
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 8,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: btnColor,
+                          ),
+                          padding: EdgeInsets.all(
+                            3.0,
+                          ),
+                          child: Text(
+                            AppCubit.get(context).favProductsNumber >= 9
+                                ? '9'
+                                : AppCubit.get(context)
+                                .favProductsNumber
+                                .toString(),
+                            style: white10(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
                           cubit.changeIndex(2);
                         },
                         icon: Icon(Icons.shopping_cart_outlined),
@@ -73,17 +108,17 @@ class HomeLayout extends StatelessWidget {
                             AppCubit.get(context).cartProductsNumber >= 9
                                 ? '9'
                                 : AppCubit.get(context)
-                                    .cartProductsNumber
-                                    .toString(),
+                                .cartProductsNumber
+                                .toString(),
                             style: white10(),
                           ),
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               )
-              :null,
+                  :null,
               bottomNavigationBar: TitledBottomNavigationBar(
                 currentIndex: cubit.currentIndex,
                 activeColor: cubit.bottomColors[cubit.currentIndex],
