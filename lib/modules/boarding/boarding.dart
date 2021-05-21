@@ -66,7 +66,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
                     controller: pageViewCon,
                     itemCount: list.length,
                     itemBuilder: (context, index) =>
-                        boardingItem(model: list[index], index: index),
+                        boardingItem(model: list[index], index: index,context: context),
                     onPageChanged: (index) {
                       if (index == 3) {
                         isLast = true;
@@ -106,7 +106,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
                             ),
                             onPressed: () {
                               if (isLast) {
-                                navigateTo(
+                                navigateToAndFinish(
                                   context: context,
                                   widget: LoginScreen(),
                                 );

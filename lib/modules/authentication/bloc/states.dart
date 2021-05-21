@@ -4,7 +4,6 @@ abstract class AuthStates {}
 class AuthInitState extends AuthStates{}
 class AuthLoadingState extends AuthStates{}
 class AuthSuccessState extends AuthStates{
-
   UserInfoModel userInfoModel;
   AuthSuccessState(this.userInfoModel);
 }

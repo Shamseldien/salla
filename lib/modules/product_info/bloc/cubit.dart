@@ -11,9 +11,9 @@ class ProductInfoCubit extends Cubit<ProductInfoStates>{
    static ProductInfoCubit get(context)=>BlocProvider.of(context);
 
   ProductInfoModel productInfo;
-   void getProductInfo({productId}){
+   Future getProductInfo({productId})async{
      emit(ProductInfoStateLoading());
-     repository.getProductInfo(
+    return await repository.getProductInfo(
        id: productId,
        token: userToken,
      ).then((value){

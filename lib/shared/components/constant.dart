@@ -7,23 +7,32 @@ import 'package:salla/shared/network/local/cash_helper.dart';
 
 const String APP_LANG_KEY='appLang';
 const String APP_DIRECTION_KEY='appDirection';
-const String USER_TOKEN_KEY='appDirection';
+const String USER_TOKEN_KEY='token';
 const String USER_Model_Info_KEY='userInfo';
+const String THEME_MODE_KEY='themeMode';
 String appLanguage ='';
 String userToken ='';
+
 
 Future<bool> saveLanguageCode(code)async{
   appLanguage = code;
   return await di<CashHelper>().put(key: APP_LANG_KEY, value: code);
 }
 
+Future<bool>saveThemeMode({isDark})async{
+  return await di<CashHelper>().put(key: THEME_MODE_KEY, value: isDark);
+}
+
+Future<bool>getThemeMode()async {
+  return await di<CashHelper>().get(key: THEME_MODE_KEY);
+}
 
 Future<String>getUserToken()async {
   return await di<CashHelper>().get(key: USER_TOKEN_KEY);
 }
 
 Future<String> getLangCode()async{
-  return await di<CashHelper>().get(key: APP_LANG_KEY)??'en';
+  return await di<CashHelper>().get(key: APP_LANG_KEY);
 }
 
 

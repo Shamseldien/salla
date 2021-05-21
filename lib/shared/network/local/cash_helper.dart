@@ -14,7 +14,6 @@ abstract class CashHelper{
 
 class CashImplementation extends CashHelper{
   final SharedPreferences _preferences;
-
   CashImplementation(this._preferences);
   @override
   Future<bool> clear({String key}) async{

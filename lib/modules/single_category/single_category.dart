@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:salla/models/single_category/single_cat_model.dart';
+import 'package:salla/modules/product_info/bloc/cubit.dart';
 import 'package:salla/modules/product_info/product_info.dart';
 import 'package:salla/modules/single_category/bloc/cubit.dart';
 import 'package:salla/modules/single_category/bloc/states.dart';
@@ -20,62 +21,69 @@ class SingleCategory extends StatelessWidget {
   SingleCategory({this.catName,this.id});
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (context)=>di<SingleCatCubit>()..getSingleCategory(catId: id),
-    child: BlocConsumer<SingleCatCubit,SingleCatStates>(
-        listener: (context,state){},
-        builder: (context,state){
-          var model = SingleCatCubit.get(context).singleCatModel;
-          return Scaffold(
-            appBar: AppBar(
-              elevation: 1,
-              title: Text(catName),
-            ),
-            body: ConditionalBuilder(
-                condition: state is! SingleCatStateLoading,
-                builder: (context)=>ConditionalBuilder(
-                    condition: model.data.data.isNotEmpty,
-                    builder: (context)=> Column(
-                      children: [
-                        SizedBox(height: 10,),
-                        Expanded(
-                          child: StaggeredGridView.countBuilder(
-                            crossAxisCount: 2,
-                            physics: BouncingScrollPhysics(),
-                            itemCount: model.data.data.length,
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            itemBuilder: (BuildContext context, int index) {
-                              return singleCatItems(
-                                  context: context,
-                                  index: index,
-                                  product: model.data.data[index]
-                              );
-                            },
-                            staggeredTileBuilder: (int index) {
-                              return StaggeredTile.count(
-                                  1, index.isOdd ? 2 : 1.7);
-                            },
-                            mainAxisSpacing: 15.0,
-                            crossAxisSpacing: 10.0,
+    return Directionality(
+      textDirection: AppCubit.get(context).appDirection,
+      child: BlocProvider(create: (context)=>di<SingleCatCubit>()..getSingleCategory(catId: id),
+      child: BlocConsumer<SingleCatCubit,SingleCatStates>(
+          listener: (context,state){},
+          builder: (context,state){
+            var model = SingleCatCubit.get(context).singleCatModel;
+            return Scaffold(
+              appBar: AppBar(
+                elevation: 1,
+                title: Text(catName),
+              ),
+              body: ConditionalBuilder(
+                  condition: state is! SingleCatStateLoading,
+                  builder: (context)=>ConditionalBuilder(
+                      condition: model.data.data.isNotEmpty,
+                      builder: (context)=> Column(
+                        children: [
+                          SizedBox(height: 10,),
+                          Expanded(
+                            child: StaggeredGridView.countBuilder(
+                              crossAxisCount: 2,
+                              physics: BouncingScrollPhysics(),
+                              itemCount: model.data.data.length,
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              itemBuilder: (BuildContext context, int index) {
+                                return singleCatItems(
+                                    context: context,
+                                    index: index,
+                                    product: model.data.data[index]
+                                );
+                              },
+                              staggeredTileBuilder: (int index) {
+                                return StaggeredTile.count(
+                                    1, index.isOdd ? 2 : 1.7);
+                              },
+                              mainAxisSpacing: 15.0,
+                              crossAxisSpacing: 10.0,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  fallback: (context)=>Center(child: Padding(
-                    padding: EdgeInsetsDirectional.only(end: 20.0),
-                    child: Image(image: AssetImage('assets/images/noproduct.png')),
-                  ),),
-                ),
-              fallback: (context)=>Center(child: loadingIndicator(),),),
-          );
-        },
+                        ],
+                      ),
+                    fallback: (context)=>Center(child: Padding(
+                      padding: EdgeInsetsDirectional.only(end: 20.0),
+                      child: Image(image: AssetImage('assets/images/noproduct.png')),
+                    ),),
+                  ),
+                fallback: (context)=>Center(child: loadingIndicator(),),),
+            );
+          },
 
-    ),
+      ),
+      ),
     );
   }
 
   Widget singleCatItems({Products product,index,context})=>InkWell(
     onTap: () {
-      navigateTo(context: context, widget: ProductInfo(id: product.id,));
+
+      navigateTo(context: context, widget: ProductInfo());
+      ProductInfoCubit.get(context)..getProductInfo(productId: product.id).then((value) {
+
+      });
     },
     child: Container(
       decoration: BoxDecoration(
@@ -113,7 +121,8 @@ class SingleCategory extends StatelessWidget {
                           ),
                           image: DecorationImage(
                             image: NetworkImage(
-                                product.image),
+                                product.image,),
+                            fit: BoxFit.cover
                           )
 
                       ),
@@ -173,7 +182,7 @@ class SingleCategory extends StatelessWidget {
                         },
                       )
                   ),
-                  if(product.discount>0)
+                  if(product.discount!=null && product.discount>0)
                     Align(
                       alignment: AlignmentDirectional.bottomStart,
                       child: Container(

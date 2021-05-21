@@ -39,7 +39,7 @@ TextStyle grey20() => TextStyle(fontSize: 20, color: Colors.grey);
 
 TextStyle grey22() => TextStyle(fontSize: 22, color: Colors.grey);
 
-ThemeData lightThem() => ThemeData(
+ThemeData lightTheme() => ThemeData(
       fontFamily: 'jannah',
       appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
@@ -60,3 +60,10 @@ ThemeData lightThem() => ThemeData(
 
 
     );
+
+
+ThemeData darkTheme() => ThemeData(
+  fontFamily: 'jannah',
+    brightness: Brightness.dark
+
+);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/layout/bloc/cubit.dart';
 import 'package:salla/layout/bloc/states.dart';
+import 'package:salla/modules/cart/cart.dart';
 import 'package:salla/modules/favorites/favorites.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
@@ -11,21 +12,27 @@ import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/style/colors.dart';
+import 'package:salla/shared/style/icon_broken.dart';
 import 'package:salla/shared/style/styles.dart';
-import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 
 class HomeLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //print( AppCubit.get(context).appDirection);
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+
+      },
       builder: (context, state) {
         var cubit = AppCubit.get(context);
-        return SafeArea(
-          child: Scaffold(
-              appBar: cubit.currentIndex!=3 && AppCubit.get(context).myFavoritesModel!=null
-                  ? AppBar(
+        return Scaffold(
+             // appBar: cubit.currentIndex!=3 && AppCubit.get(context).myFavoritesModel!=null
+                appBar:cubit.currentIndex==3
+                    ?
+                    AppBar(
+                      title: Text('${appLang(context).settings}'),
+                      elevation: 0.5,
+                    )
+                    :AppBar(
                 title: Row(
                   children: [
                     Text(appLang(context).salla),
@@ -57,49 +64,18 @@ class HomeLayout extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          navigateTo(context: context, widget: FavoritesScreen());
+                          navigateTo(context: context, widget: CartScreen());
                         },
-                        icon: Icon(Icons.favorite_outline,),
+                        icon: Icon(Icons.shopping_cart_outlined),
                       ),
-                      Positioned(
+                      if(AppCubit.get(context).cartProductsNumber>0)
+                        Positioned(
                         top: 5,
                         right: 8,
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: btnColor,
-                          ),
-                          padding: EdgeInsets.all(
-                            3.0,
-                          ),
-                          child: Text(
-                            AppCubit.get(context).favProductsNumber >= 9
-                                ? '9'
-                                : AppCubit.get(context)
-                                .favProductsNumber
-                                .toString(),
-                            style: white10(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          cubit.changeIndex(2);
-                        },
-                        icon: Icon(Icons.shopping_cart_outlined),
-                      ),
-                      Positioned(
-                        top: 5,
-                        right: 8,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red,
                           ),
                           padding: EdgeInsets.all(
                             3.0,
@@ -117,36 +93,38 @@ class HomeLayout extends StatelessWidget {
                     ],
                   ),
                 ],
-              )
-                  :null,
-              bottomNavigationBar: TitledBottomNavigationBar(
+              ),
+              //    :null,
+              bottomNavigationBar: BottomNavigationBar(
                 currentIndex: cubit.currentIndex,
-                activeColor: cubit.bottomColors[cubit.currentIndex],
-                inactiveColor: Colors.blueGrey,
+
                 onTap: (index) {
                   cubit.changeIndex(index);
                 },
+                selectedItemColor:cubit.bottomColors[cubit.currentIndex],
+                unselectedItemColor: Colors.blueGrey,
+                showUnselectedLabels: true,
                 items: [
-                  TitledNavigationBarItem(
-                    title: Text(appLang(context).home),
-                    icon: Icons.home_outlined,
+                  BottomNavigationBarItem(
+                    label: appLang(context).home,
+                    icon: Icon(IconBroken.Home),
                   ),
-                  TitledNavigationBarItem(
-                    title: Text(appLang(context).categories),
-                    icon: Icons.category_outlined,
+                  BottomNavigationBarItem(
+                    label: appLang(context).categories,
+                    icon: Icon(IconBroken.Category),
                   ),
-                  TitledNavigationBarItem(
-                    title: Text(appLang(context).cart),
-                    icon: Icons.shopping_bag_outlined,
+                  BottomNavigationBarItem(
+                    label: appLang(context).favorites,
+                    icon: Icon(IconBroken.Heart),
                   ),
-                  TitledNavigationBarItem(
-                    title: Text(appLang(context).settings),
-                    icon: Icons.settings_outlined,
+                  BottomNavigationBarItem(
+                    label: appLang(context).settings,
+                    icon: Icon(IconBroken.Setting),
                   ),
                 ],
               ),
-              body: cubit.pages[cubit.currentIndex]),
-        );
+              body: cubit.pages[cubit.currentIndex]);
+
       },
     );
   }

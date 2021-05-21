@@ -21,6 +21,11 @@ abstract class DioHelper {
     @required dynamic data,
     String token,
   });
+
+  Future<Response> delete({
+    @required String url,
+    String token,
+  });
 }
 
 class DioImplementation extends DioHelper {
@@ -64,5 +69,17 @@ class DioImplementation extends DioHelper {
     };
 
     return await dio.put(url,data: data,);
+  }
+
+  @override
+  Future<Response> delete({String url, String token})async {
+    dio.options.headers = {
+      'Authorization': token ?? '',
+      'lang': appLanguage,
+      'Content-Type': 'application/json',
+    };
+
+    return await dio.delete(url,);
+
   }
 }
