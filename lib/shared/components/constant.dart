@@ -10,6 +10,7 @@ const String APP_DIRECTION_KEY='appDirection';
 const String USER_TOKEN_KEY='token';
 const String USER_Model_Info_KEY='userInfo';
 const String THEME_MODE_KEY='themeMode';
+const String SEARCH_HISTORY_KEY='searchHistory';
 String appLanguage ='';
 String userToken ='';
 
@@ -21,6 +22,17 @@ Future<bool> saveLanguageCode(code)async{
 
 Future<bool>saveThemeMode({isDark})async{
   return await di<CashHelper>().put(key: THEME_MODE_KEY, value: isDark);
+}
+Future<bool>saveSearchHistory({value})async{
+  return await di<CashHelper>().put(key: SEARCH_HISTORY_KEY, value: value);
+}
+
+Future getSearchHistory()async {
+  return await di<CashHelper>().get(key: SEARCH_HISTORY_KEY);
+}
+
+Future<bool>clearSearchHistory()async{
+  return await di<CashHelper>().clear(key: SEARCH_HISTORY_KEY);
 }
 
 Future<bool>getThemeMode()async {
@@ -40,7 +52,10 @@ Future<String>getTranslationFile(appLang)async{
   return await rootBundle.loadString('assets/translation/${appLang ?? 'en'}.json');
 }
 
-
+Future<bool> deleteUserToken() async
+{
+  return await di<CashHelper>().clear(key:USER_TOKEN_KEY);
+}
 
 AppLanguageModel appLang(context) => AppCubit.get(context).appLanguageModel;
 

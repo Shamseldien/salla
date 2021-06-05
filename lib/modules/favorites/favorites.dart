@@ -16,17 +16,15 @@ import 'package:salla/shared/style/styles.dart';
 class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: AppCubit
-          .get(context)
-          .appDirection,
-      child: BlocConsumer<AppCubit, AppStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          var model = AppCubit
-              .get(context)
-              .myFavoritesModel;
-          return Scaffold(
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var model = AppCubit
+            .get(context)
+            .myFavoritesModel;
+        return Directionality(
+          textDirection: AppCubit.get(context).appDirection,
+          child: Scaffold(
             body: model!=null && model.data.data.isNotEmpty
                 ? ConditionalBuilder(
               condition: model != null,
@@ -48,8 +46,9 @@ class FavoritesScreen extends StatelessWidget {
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                             onTap: () {
+                              navigateTo(context: context, widget: ProductInfo());
                               ProductInfoCubit.get(context)..getProductInfo(productId:model.data.data[index].product.id ).then((value) {
-                                navigateTo(context: context, widget: ProductInfo());
+
                               });
                             },
                             child: Container(
@@ -233,9 +232,9 @@ class FavoritesScreen extends StatelessWidget {
                 Text('${appLang(context).emptyFav}',style: black18(),)
               ],
             ),),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

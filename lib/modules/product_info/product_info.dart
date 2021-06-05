@@ -14,15 +14,18 @@ import 'package:salla/shared/style/colors.dart';
 import 'package:salla/shared/style/styles.dart';
 
 class ProductInfo extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: AppCubit.get(context).appDirection,
-      child: BlocConsumer<ProductInfoCubit,ProductInfoStates>(
-        listener: (context,state){},
-        builder: (context,state){
-          var model = ProductInfoCubit.get(context).productInfo;
-          return Scaffold(
+    var size = MediaQuery.of(context).size;
+    return BlocConsumer<ProductInfoCubit,ProductInfoStates>(
+      listener: (context,state){},
+      builder: (context,state){
+        var model = ProductInfoCubit.get(context).productInfo;
+        return Directionality(
+          textDirection: AppCubit.get(context).appDirection,
+          child: Scaffold(
             appBar: AppBar(
               elevation: 1,
               title: Text(state is! ProductInfoStateLoading ?model.data.name:'',overflow: TextOverflow.ellipsis,maxLines: 1,),
@@ -42,11 +45,11 @@ class ProductInfo extends StatelessWidget {
                             CarouselSlider.builder(
                               itemCount: model.data.images.length,
                               options: CarouselOptions(
-                                  height: 200,
+                                  height: size.width>600?400: 200,
                                   autoPlay: true,
                                   aspectRatio: 0.8,
-                                  enlargeCenterPage: true
-                                // enlargeCenterPage: true,
+                                  enlargeCenterPage: true,
+
                               ),
                               itemBuilder: (context, index, realIdx) {
                                 return Image(
@@ -155,9 +158,9 @@ class ProductInfo extends StatelessWidget {
               ),
             ),
 
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

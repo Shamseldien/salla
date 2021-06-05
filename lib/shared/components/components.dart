@@ -12,6 +12,7 @@ import 'package:salla/models/cart/my_cart_model.dart';
 import 'package:salla/models/categories_model/categories_model.dart';
 import 'package:salla/models/order_details/order_details_model.dart';
 import 'package:salla/models/orders/orders_model.dart';
+import 'package:salla/models/search_model/search_model.dart';
 import 'package:salla/modules/check_out_details/check_out_details.dart';
 import 'package:salla/models/home_model/home_models.dart';
 import 'package:salla/modules/authentication/bloc/cubit.dart';
@@ -20,10 +21,12 @@ import 'package:salla/modules/boarding/boarding.dart';
 import 'package:salla/modules/order_details/orders_details_screen.dart';
 import 'package:salla/modules/product_info/bloc/cubit.dart';
 import 'package:salla/modules/product_info/product_info.dart';
+import 'package:salla/modules/single_category/bloc/cubit.dart';
 import 'package:salla/modules/single_category/single_category.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/constant.dart';
+import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/language/language_model.dart';
 import 'package:salla/shared/style/colors.dart';
 import 'package:salla/shared/style/icon_broken.dart';
@@ -59,126 +62,136 @@ Widget paymentBuilder({context,function,text,icon,value})=> Card(
   ),
 );
 
+
 Widget cartBuilder(CartItems model,context)=>InkWell(
   onTap: (){
     navigateTo(context: context, widget: ProductInfo());
-    ProductInfoCubit.get(context)..getProductInfo(productId: model.id).then((value) {
+    ProductInfoCubit.get(context)..getProductInfo(productId: model.product.id).then((value) {
 
     });
   },
   child: Padding(
-    padding: const EdgeInsetsDirectional.only(
-        top: 10,
-        bottom: 30,
-        end: 20,
-        start: 10
-    ),
-    child: Container(
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 10),
-            child: Container(
-                height:120,
-                width: 110,
-                child: Image(image: NetworkImage(model.product.image),fit: BoxFit.cover,)),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(model.product.name,overflow: TextOverflow.ellipsis,maxLines: 2,),
-                SizedBox(height: 10,),
-                Row(
+    padding: const EdgeInsets.all(8.0),
+    child: Card(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(
+            top: 10,
+            bottom: 30,
+            end: 20,
+            start: 10
+        ),
+        child: Container(
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 10),
+                child: Container(
+                    height:120,
+                    width: 110,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0)
+                    ),
+                    child: Image(image: NetworkImage(model.product.image),fit: BoxFit.cover,)),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(model.product.name,overflow: TextOverflow.ellipsis,maxLines: 2,),
+                    SizedBox(height: 10,),
+                    Row(
                       children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(model.product.price.round().toString(),style: black14().copyWith(color: Colors.blue),),
-                            Text(' ${appLang(context).currency}',style: black12().copyWith(color: Colors.blue),),
+                            Row(
+                              children: [
+                                Text(model.product.price.round().toString(),style: black14().copyWith(color: Colors.blue),),
+                                Text(' ${appLang(context).currency}',style: black12().copyWith(color: Colors.blue),),
+                              ],
+                            ),
+                            if(model.product.discount>0)
+                              Row(
+                                children: [
+                                  Text(model.product.oldPrice.round().toString(),style: black12().copyWith(
+
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      decoration: TextDecoration.lineThrough
+                                  ),),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0,
+                                    ),
+                                    child: Container(
+                                      width: 1.0,
+                                      height: 10.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+
+                                  Text('${model.product.discount}%',style: black12().copyWith(color: Colors.red),),
+
+                                ],
+                              ),
                           ],
                         ),
-                        if(model.product.discount>0)
-                          Row(
-                            children: [
-                              Text(model.product.oldPrice.round().toString(),style: black12().copyWith(
-
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                  decoration: TextDecoration.lineThrough
-                              ),),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 5.0,
-                                ),
-                                child: Container(
-                                  width: 1.0,
-                                  height: 10.0,
-                                  color: Colors.grey,
-                                ),
-                              ),
-
-                              Text('${model.product.discount}%',style: black12().copyWith(color: Colors.red),),
-
-                            ],
+                        Spacer(),
+                        Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: btnColor,
+                                  width: 0.5
+                              )
                           ),
+                          child: IconButton(
+                              padding: EdgeInsets.all(3),
+                              icon: Icon(Icons.remove,size: 10,), onPressed: (){
+                            if(model.quantity>1)
+                              AppCubit.get(context).updateCart(
+                                  id: model.id,
+                                  quantity: --model.quantity
+                              );
+                          }),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 13),
+                          child: Text('${model.quantity}',style: black18().copyWith(color: Colors.blue),),
+                        ),
+                        Container(
+                          height: 20,
+                          width: 20,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: btnColor,
+                                  width: 0.5
+                              )
+                          ),
+                          child: IconButton(
+                              padding: EdgeInsets.all(3),
+                              icon: Icon(Icons.add,size: 12,), onPressed: (){
+                            AppCubit.get(context).updateCart(
+                                id: model.id,
+                                quantity: ++model.quantity
+                            );
+                          }),
+                        ),
+
                       ],
-                    ),
-                    Spacer(),
-                    Container(
-                      height: 20,
-                      width: 20,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: btnColor,
-                              width: 0.5
-                          )
-                      ),
-                      child: IconButton(
-                          padding: EdgeInsets.all(3),
-                          icon: Icon(Icons.remove,size: 10,), onPressed: (){
-                        if(model.quantity>1)
-                          AppCubit.get(context).updateCart(
-                              id: model.id,
-                              quantity: --model.quantity
-                          );
-                      }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 13),
-                      child: Text('${model.quantity}',style: black18().copyWith(color: Colors.blue),),
-                    ),
-                    Container(
-                      height: 20,
-                      width: 20,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: btnColor,
-                              width: 0.5
-                          )
-                      ),
-                      child: IconButton(
-                          padding: EdgeInsets.all(3),
-                          icon: Icon(Icons.add,size: 12,), onPressed: (){
-                        AppCubit.get(context).updateCart(
-                            id: model.id,
-                            quantity: ++model.quantity
-                        );
-                      }),
-                    ),
-
+                    )
                   ],
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+                ),
+              )
+            ],
+          ),
 
+        ),
+      ),
     ),
   ),
 );
@@ -438,6 +451,90 @@ Widget orderDetailsItem({context,OrderProducts order})=>Card(
   ),
 );
 
+Widget searchItem({SearchResults searchData,index,context})=>Card(
+  elevation: 2.0,
+  child: Padding(
+    padding: const EdgeInsets.all(15.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          height: 80,
+          width: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage('${searchData.image}')
+              )
+          ),
+        ),
+        SizedBox(height: 5,),
+        Text('${searchData.name}',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: black14().copyWith(height: 1.5),
+        ),
+        Spacer(),
+        Row(
+          children: [
+            Text('${appLang(context).price}',),
+            Spacer(),
+            Text('${searchData.price} ${appLang(context).currency}',style: grey14(),),
+          ],
+        ),
+
+      ],
+    ),
+  ),
+);
+
+
+Widget searchItemTwo({SearchResults searchData,index,context})=>Container(
+  child: Card(
+    child: Row(
+      children: [
+        Container(
+          // height: 30,
+          width: 65,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage('${searchData.image}')
+            )
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsetsDirectional.only(
+              top: 10,
+              end: 5,
+              bottom: 2,
+              start: 5
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${searchData.name}',maxLines: 2,overflow: TextOverflow.ellipsis,style: black14().copyWith(
+                  height: 1.5
+                ),),
+                SizedBox(height: 5,),
+                Row(
+                  children: [
+                    Text('${appLang(context).price}',maxLines: 2,overflow: TextOverflow.ellipsis,style: white12(),),
+                    SizedBox(width: 5,),
+                    Expanded(child: Text('${searchData.price.round()} ${appLang(context).currency}',style: grey12(),maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                  ],
+                )
+              ],
+            ),
+          ),
+        )
+      ],
+    ),
+  ),
+);
 
 Widget languageItem({LanguageModel model, index, context}) => InkWell(
       onTap: () {
@@ -535,14 +632,13 @@ Widget productItem({context, Products product,index,})=>InkWell(
                             backgroundColor:Colors.grey[200].withOpacity(.8),
                             child: IconButton(
                                 icon: Icon(
-                                  AppCubit.get(context).inCart[product.id]?Icons.shopping_bag:
+                                    AppCubit.get(context).inCart[product.id] !=null&& AppCubit.get(context).inCart[product.id]?Icons.shopping_bag:
                                   Icons.shopping_bag_outlined,
-                                  color: AppCubit.get(context).inCart[product.id]?btnColor:Colors.blueGrey,
+                                  color: AppCubit.get(context).inCart[product.id] !=null&&AppCubit.get(context).inCart[product.id]?btnColor:Colors.blueGrey,
                                 ),
                                 onPressed: () {
                                   AppCubit.get(context).addOrRemoveCart(
                                       id: product.id,
-
                                   );
                                 })),
                         SizedBox(
@@ -552,9 +648,9 @@ Widget productItem({context, Products product,index,})=>InkWell(
                             backgroundColor:Colors.grey[200].withOpacity(.8),
                             child: IconButton(
                                 icon: Icon(
-                                  AppCubit.get(context).inFav[product.id]?Icons.favorite:
+                                    AppCubit.get(context).inFav[product.id]!=null&& AppCubit.get(context).inFav[product.id]?Icons.favorite:
                                   Icons.favorite_border_outlined,
-                                  color: AppCubit.get(context).inFav[product.id]?btnColor:Colors.blueGrey,
+                                  color:AppCubit.get(context).inFav[product.id]!=null&& AppCubit.get(context).inFav[product.id]?btnColor:Colors.blueGrey,
                                 ),
                                 onPressed: () {
                                   AppCubit.get(context).addOrRemoveFavorite(
@@ -637,10 +733,25 @@ Widget productItem({context, Products product,index,})=>InkWell(
     ),
   ),
 );
+
+
+
+
+Widget noData(context)=>Center(child: Column(
+  mainAxisSize: MainAxisSize.min,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Image(image: AssetImage('assets/images/emptyfav.png'),),
+    SizedBox(height: 10,),
+    Text('${appLang(context).noProduct}',style: black18(),)
+  ],
+),);
+
 Widget categoryWidget({ProductData model,context})=>InkWell(
   onTap: (){
-    print(model.id);
-    navigateTo(context: context, widget: SingleCategory(catName: model.name,id: model.id,));
+    //print(model.id);
+    navigateTo(context: context, widget: SingleCategory(catName: model.name,));
+    di<SingleCatCubit>()..getSingleCategory(model.id, context);
   },
   child:   Container(
     height: 90,
@@ -778,7 +889,9 @@ Widget defaultTextFormField({
   @required context,
   bool isPass =false,
   showPassFunction,
-  IconData icon
+  IconData icon,
+  textStyle,
+
 }) =>
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -789,14 +902,16 @@ Widget defaultTextFormField({
           if (value.isEmpty) return error;
           return null;
         },
+
         controller: controller,
         obscureText:isPass,
+        style:textStyle ?? black16(),
         decoration: InputDecoration(
           suffixIcon: icon!=null ? Directionality(
               textDirection: AppCubit.get(context).appDirection,
               child: InkWell(
                   onTap: showPassFunction,
-                  child: Icon(icon))) : null,
+                  child: Icon(icon,color: Colors.grey,))) : null,
           hintText: hint,
           hintStyle: grey14(),
           isDense: true,
@@ -900,60 +1015,50 @@ Widget loadingIndicator({color})=>Center(
   ),
 );
 
-class ImageDialog extends StatefulWidget {
-  @override
-  _ImageDialogState createState() => _ImageDialogState();
-}
+Widget chooseImageDialog({context})=>Container(
+  decoration: BoxDecoration(
+    border:Border.all(color: Colors.white),
+    borderRadius: BorderRadius.only(
+        topRight: Radius.circular(30.0),
+        topLeft: Radius.circular(30.0)
 
-class _ImageDialogState extends State<ImageDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(create: (context)=>AuthCubit(),
-    child:  BlocConsumer<AuthCubit,AuthStates>(
-        builder: (context, state) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(50),
-              bottomLeft: Radius.circular(50),
-            )),
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: 80,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text('Camera'),
-              leading: Icon(Icons.camera_alt_outlined),
-              onTap: () {
-                AuthCubit.get(context).getImage(source: ImageSource.camera).then((value){
-                  AuthCubit.get(context).base64Image = value;
-                  Navigator.pop(context);
-                });
-                setState(() {});
-              },
-            ),
-            ListTile(
-              title: Text('Gallery'),
-              leading: Icon(Icons.image_outlined),
-              onTap: () {
-                AuthCubit.get(context).getImage(source: ImageSource.gallery).then((value){
-                  Navigator.pop(context);
-                });
-                setState(() {});
-              },
-            ),
-          ],
-        ),
+    ),
+  ),
+  child:   Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 100,
+        height: 5,
+        color: Colors.blueGrey,
+      ),
+      ListTile(
+        leading:
+        Icon(IconBroken.Camera),
+        title: Text('${appLang(context).cam}'),
+        onTap: (){
+          AuthCubit.get(context).getImage(source: ImageSource.camera);
+          Navigator.pop(context);
+        },
+        shape:RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30.0),
+              topLeft: Radius.circular(30.0)
+          ),
+        ) ,
+      ),
+      ListTile(
+        leading: Icon(IconBroken.Image),
+        title: Text('${appLang(context).gallery}'),
+        onTap: (){
+          AuthCubit.get(context).getImage(source: ImageSource.gallery);
+          Navigator.pop(context);
+        },
+      )
+    ],
+  ),
+);
 
-      );
-    },
-    listener: (context, state) {}),
-
-    );
-  }
-}
 
 
 

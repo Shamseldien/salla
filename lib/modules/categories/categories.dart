@@ -11,26 +11,29 @@ class CategoriesScreen extends StatelessWidget {
         listener: (context,state){},
         builder: (context,state){
           var model = AppCubit.get(context).categoriesModel;
-          return Scaffold(
-            body: ConditionalBuilder(
-                condition: model != null ,
-                builder: (context){
-                  return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ListView.separated(
-                    itemBuilder: (context,index)=>categoryWidget(
-                        model: model.data.data[index],
-                        context: context ),
-                    separatorBuilder: (ctx,index)=>Container(
-                      height: 1,
-                      width: double.infinity,
-                      color: Colors.grey[200],
+          return Directionality(
+            textDirection: AppCubit.get(context).appDirection,
+            child: Scaffold(
+              body: ConditionalBuilder(
+                  condition: model != null ,
+                  builder: (context){
+                    return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: ListView.separated(
+                      itemBuilder: (context,index)=>categoryWidget(
+                          model: model.data.data[index],
+                          context: context ),
+                      separatorBuilder: (ctx,index)=>Container(
+                        height: 1,
+                        width: double.infinity,
+                        color: Colors.grey[200],
+                      ),
+                      itemCount: model.data.data.length,
                     ),
-                    itemCount: model.data.data.length,
-                  ),
-                );
-                },
-            fallback: (context)=>Center(child: loadingIndicator(),),
+                  );
+                  },
+              fallback: (context)=>Center(child: loadingIndicator(),),
+              ),
             ),
           );
         },

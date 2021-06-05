@@ -6,6 +6,7 @@ import 'package:salla/modules/orders/bloc/cubit.dart';
 import 'package:salla/modules/orders/my_orders.dart';
 import 'package:salla/modules/product_info/bloc/cubit.dart';
 import 'package:salla/modules/profile/bloc/cubit.dart';
+import 'package:salla/modules/search/bloc/cubit.dart';
 import 'package:salla/modules/single_category/bloc/cubit.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/network/local/cash_helper.dart';
@@ -31,6 +32,7 @@ Future initApp() async {
   di.registerLazySingleton<DioHelper>(() => DioImplementation());
   di.registerLazySingleton<HomeLayoutCubit>(() => HomeLayoutCubit());
   di.registerLazySingleton<EditProfileCubit>(() => EditProfileCubit(di<Repository>()));
+  di.registerLazySingleton<SearchCubit>(() => SearchCubit(di<Repository>()));
   di.registerLazySingleton<MyOrdersCubit>(() => MyOrdersCubit(repository: di<Repository>()));
 
   di.registerLazySingleton<Repository>(() => RepositoryImplementation(

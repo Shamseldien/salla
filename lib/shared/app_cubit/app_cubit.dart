@@ -14,7 +14,10 @@ import 'package:salla/models/add_favorites/favorites_model.dart';
 import 'package:salla/models/favorites/my_favorites_model.dart';
 import 'package:salla/models/home_model/home_models.dart';
 import 'package:salla/models/orders/orders_model.dart';
+import 'package:salla/models/promo_estimate/promo_estimate_model.dart';
+import 'package:salla/models/promo_validate/promo_validate.dart';
 import 'package:salla/models/user_info/user_info_model.dart';
+import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/modules/cart/cart.dart';
 import 'package:salla/modules/categories/categories.dart';
 import 'package:salla/modules/favorites/favorites.dart';
@@ -93,6 +96,8 @@ class AppCubit extends Cubit<AppStates> {
   MyCartModel myCartModel;
   AddOrderModel addOrderModel;
   UserInfoModel userModel;
+  PromoValidateModel promoValidateModel;
+  PromoEstimateModel promoEstimateModel;
   int cartProductsNumber = 0;
   int favProductsNumber = 0;
   Map<int, bool> inCart = {};
@@ -140,6 +145,12 @@ class AppCubit extends Cubit<AppStates> {
     selectedAdd = index;
     emit(SelectAddressState());
   }
+  bool isType=false;
+  void changeIsType(bool isTyping){
+    isType = isTyping;
+    print(isType);
+    emit(SearchStateOnType());
+  }
 
   void getAddress() {
     //  emit(HomeLoadingState()w);
@@ -181,7 +192,6 @@ class AppCubit extends Cubit<AppStates> {
     emit(BackHomeState());
   }
 
-
   Future getUserInfo()async{
     print(userToken);
     if(userToken!=null){
@@ -206,6 +216,57 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
+  Future validatePromo({promo})async{
+    emit(ValidatePromoLoading());
+    return await repository.promoValidate(
+      token: userToken,
+      promo: promo
+    ).then((value)async {
+      promoValidateModel = PromoValidateModel.fromJson(value.data);
+      if(promoValidateModel.status)
+        {
+          print(value.data);
+        await estimateOrderCost().then((value){
+           emit(ValidatePromoSuccess());
+         });
+        }else{
+        print(value.data);
+        emit(ValidatePromoError(promoValidateModel.message));
+      }
+    }).catchError((error){
+      emit(ValidatePromoError(error));
+    });
+  }
+
+
+  Future estimateOrderCost()async{
+    return await repository.estimateOrderCost(
+      token: userToken,
+      promoId: promoValidateModel.data.id
+    ).then((value) {
+      promoEstimateModel = PromoEstimateModel.fromJson(value.data);
+      if(promoEstimateModel.status){
+        print(promoEstimateModel.data.total);
+        emit(EstimatePromoSuccess());
+      }else{
+        print(promoEstimateModel);
+        emit(EstimatePromoError(promoEstimateModel.message));
+      }
+    }).catchError((error){
+      print(error);
+      emit(EstimatePromoError(error));
+    });
+  }
+  Future<void> userLogout(context) async{
+    emit(UserLogoutLoadingState());
+    await repository.userLogout(token: userToken).then((value)async {
+      print(value.data.toString());
+     await deleteUserToken();
+     await clearSearchHistory();
+      emit(UserLogoutState());
+    });
+  }
+
   Future checkOut({addressId, promo}) async{
     emit(CheckOutLoadingState());
   return await repository
@@ -214,7 +275,7 @@ class AppCubit extends Cubit<AppStates> {
             addressId: addressId,
             payMethod: 1,
             points: false,
-            promo: promo.toString())
+            promo: promoValidateModel.data.id)
         .then((value) {
       //
       if (value.data['status'] == true) {
@@ -254,6 +315,10 @@ class AppCubit extends Cubit<AppStates> {
 
   void getHomeData() {
     //  emit(AppStateLoading());
+    inFav.clear();
+    inCart.clear();
+    cartProductsNumber=0;
+    favProductsNumber=0;
     if(userToken!=null && userToken !='')
       repository.getHomeData(token: userToken).then((value) {
         print('homeData=>>${value.data}');
@@ -380,4 +445,5 @@ class AppCubit extends Cubit<AppStates> {
       favProductsNumber--;
     }
   }
+
 }

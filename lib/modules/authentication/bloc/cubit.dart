@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:salla/models/user_info/user_info_model.dart';
@@ -24,20 +25,35 @@ class AuthCubit extends Cubit<AuthStates> {
   UserInfoModel userInfoModel;
 
 
-  Future<String> getImage({@required ImageSource source}) async {
-    String _base64Image ;
-    final pickedFile = await picker.getImage(source: source, imageQuality: 50);
+  Future  getImage({@required ImageSource source}) async {
+    emit(AuthSelectImageLoadingState());
+    final pickedFile = await picker.getImage(source: source, );
     if (pickedFile != null) {
-
       image = File(pickedFile.path);
-    //  List<int> imageBytes = image.readAsBytesSync();
-     // _base64Image = base64Encode(imageBytes);
-      //print('from here ==> $_base64Image <==to here');
+      List<int> imageBytes = image.readAsBytesSync();
+      base64Image = base64Encode(imageBytes);
       emit(AuthSelectImageState());
     } else {
       print('No image selected.');
     }
-    return _base64Image;
+
+  }
+
+
+  void chooseSourceImageDialog(context){
+    showBottomSheet(
+      context: context,
+      elevation: 2.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30.0),
+            topLeft: Radius.circular(30.0)
+        ),
+      ),
+      builder: (context) {
+        return chooseImageDialog(context: context);
+      },
+    );
   }
 
   userLogin({@required email, @required password}) {
@@ -70,6 +86,7 @@ class AuthCubit extends Cubit<AuthStates> {
       email: email,
       phone: phone,
       password: password,
+      image: base64Image
     ).then((value) {
       userInfoModel = UserInfoModel.fromJson(value.data);
       if(userInfoModel.status){

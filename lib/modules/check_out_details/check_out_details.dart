@@ -11,14 +11,14 @@ import 'package:salla/shared/style/styles.dart';
 class CheckOutDetails extends StatelessWidget {
   @override
   Widget build(BuildContext ctx) {
-    return Directionality(
-      textDirection: AppCubit.get(ctx).appDirection,
-      child: BlocConsumer<AppCubit,AppStates>(
-         listener: (context,state){
-         },
-         builder: (context,state){
-           var cubit = AppCubit.get(context);
-           return Scaffold(
+    return BlocConsumer<AppCubit,AppStates>(
+       listener: (context,state){
+       },
+       builder: (context,state){
+         var cubit = AppCubit.get(context);
+         return Directionality(
+           textDirection: AppCubit.get(context).appDirection,
+           child: Scaffold(
              appBar: AppBar(
                elevation: 1.0,
                title: Text('${appLang(context).orderDetails}'),
@@ -42,7 +42,7 @@ class CheckOutDetails extends StatelessWidget {
                      children: [
                        Text('${appLang(context).subTotal}',style: black16(),),
                        SizedBox(width: 20,),
-                       Text('${cubit.addOrderModel.data.cost.round()} ${appLang(context).currency}',style: grey14(),),
+                       Text('${cubit.addOrderModel.data.cost} ${appLang(context).currency}',style: grey14(),),
 
                      ],
                    ),
@@ -64,7 +64,7 @@ class CheckOutDetails extends StatelessWidget {
                      children: [
                        Text('${appLang(context).disc}',style: black16(),),
                        SizedBox(width: 20,),
-                       Text('${cubit.addOrderModel.data.discount} %',style: grey14(),),
+                       Text('${cubit.addOrderModel.data.discount} ${appLang(context).currency}',style: grey14(),),
 
                      ],
                    ),
@@ -97,9 +97,9 @@ class CheckOutDetails extends StatelessWidget {
                  ],
                ),
              ),
-           );
-         },
-      ),
+           ),
+         );
+       },
     );
   }
 }

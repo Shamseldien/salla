@@ -84,6 +84,11 @@ class AppLanguageModel {
   String price;
   String quantity;
   String cancelOrder;
+  String apply;
+  String promoText;
+  String cam;
+  String gallery;
+  String noProduct;
 
 
 
@@ -175,6 +180,11 @@ class AppLanguageModel {
         this.price,
         this.quantity,
         this.cancelOrder,
+        this.apply,
+        this.promoText,
+        this.cam,
+        this.gallery,
+        this.noProduct,
 
       });
 
@@ -270,6 +280,11 @@ class AppLanguageModel {
     quantity = json['quantity'];
     price = json['price'];
     cancelOrder = json['cancelOrder'];
+    apply = json['apply'];
+    promoText = json['promoText'];
+    cam = json['cam'];
+    gallery = json['gallery'];
+    noProduct = json['noProduct'];
 
 
 

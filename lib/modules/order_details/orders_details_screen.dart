@@ -16,21 +16,21 @@ class OrdersDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyOrdersCubit.get(context)..getOrderDetails(orderId: id);
-    return Directionality(
-      textDirection: AppCubit.get(context).appDirection,
-      child: BlocConsumer<MyOrdersCubit, MyOrdersStates>(
-        listener: (context, state) {
-        },
-        builder: (context, state) {
-          var cubit = MyOrdersCubit.get(context);
-          return Scaffold(
+    return BlocConsumer<MyOrdersCubit, MyOrdersStates>(
+      listener: (context, state) {
+      },
+      builder: (context, state) {
+        var cubit = MyOrdersCubit.get(context);
+        return Directionality(
+          textDirection: AppCubit.get(context).appDirection,
+          child: Scaffold(
               appBar: AppBar(
                 elevation: 1.0,
                 title: Text('${appLang(context).orderDetails}'),
               ),
               body: Column(
                 children: [
-                  if(state is OrderCancelStateLoading)
+                  if(state is OrderCancelStateLoading || state is MyOrdersStateLoading)
                     LinearProgressIndicator(
                       backgroundColor: Colors.grey[300],
                       valueColor: AlwaysStoppedAnimation<Color>(btnColor),
@@ -87,7 +87,7 @@ class OrdersDetailsScreen extends StatelessWidget {
                                           ),
                                           Spacer(),
                                           Text(
-                                            '${cubit.orderDetailsModel.data.discount}%',
+                                            '${cubit.orderDetailsModel.data.discount} ${appLang(context).currency}',
                                             style: grey14(),
                                           )
                                         ],
@@ -195,13 +195,16 @@ class OrdersDetailsScreen extends StatelessWidget {
                         cubit.cancelOrder(
                             orderId: this.id,
                         ).then((value){
-                          Navigator.pop(context);
+                          cubit.getOrders().then((value) {
+                            Navigator.pop(context);
+                          });
+
                         });
                       },))
                 ],
-              ));
-        },
-      ),
+              )),
+        );
+      },
     );
   }
 }

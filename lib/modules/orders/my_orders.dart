@@ -12,13 +12,13 @@ class MyOrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MyOrdersCubit.get(context)..getOrders();
-   return Directionality(
-     textDirection: AppCubit.get(context).appDirection,
-     child: BlocConsumer<MyOrdersCubit,MyOrdersStates>(
-       listener: (context,state){},
-       builder: (context,state){
-         var cubit = MyOrdersCubit.get(context);
-         return Scaffold(
+   return BlocConsumer<MyOrdersCubit,MyOrdersStates>(
+     listener: (context,state){},
+     builder: (context,state){
+       var cubit = MyOrdersCubit.get(context);
+       return Directionality(
+         textDirection: AppCubit.get(context).appDirection,
+         child: Scaffold(
            appBar: AppBar(
              elevation: 1.0,
              title: Text('${appLang(context).orders}'),
@@ -49,9 +49,9 @@ class MyOrdersScreen extends StatelessWidget {
              ),
 
            ),
-         );
-       },
-     ),
+         ),
+       );
+     },
    );
   }
 }

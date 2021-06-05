@@ -15,6 +15,7 @@ abstract class Repository {
     @required String email,
     @required String phone,
     @required String password,
+     image
   });
   Future<Response> updateProfile({
     String name,
@@ -42,6 +43,12 @@ abstract class Repository {
   Future<Response>getUserProfile({token});
   Future<Response>confirmOrder({token,int addressId,int payMethod,dynamic promo,bool points});
   Future<Response>deleteAddress({token,id});
+  Future<Response>promoValidate({token,promo});
+  Future<Response>estimateOrderCost({token,promoId});
+  Future<Response>searchProducts({token,text});
+  Future<Response> userLogout({
+    @required String token,
+  });
 
 }
 
@@ -52,18 +59,20 @@ class RepositoryImplementation extends Repository {
   
   @override
   Future<Response> userSignUp(
-      {String userName, String email, String phone, String password}) async{
+      {String userName, String email, String phone, String password,image}) async{
    return await dioHelper.postData(url: SIGN_UP_END_POINT, data: {
       'name':userName,
       'email':email,
       'phone':phone,
       'password':password,
+     'image':image ?? ''
     });
   }
 
   @override
   Future<Response> usrLogin({String email, String password}) async{
-   return await dioHelper.postData(url: LOGIN_END_POINT, data: {
+   return await dioHelper.postData(
+       url: LOGIN_END_POINT, data: {
      'email':email,
      'password':password
    });
@@ -204,8 +213,8 @@ class RepositoryImplementation extends Repository {
           'name':name,
           'email':email,
           'phone':phone,
-          'password':password,
-          'image':image,
+          'password':password ?? '',
+          'image':image ?? '',
         }
     );
   }
@@ -233,5 +242,37 @@ class RepositoryImplementation extends Repository {
       token: token,
     );
 
+  }
+  @override
+  Future<Response> promoValidate({token, promo}) async{
+    return await dioHelper.postData(
+        url: PROMO_CODE_END_POINT,
+        token: token,
+        data: {
+          'code':promo
+        });
+  }
+
+  @override
+  Future<Response> estimateOrderCost({token, promoId}) async{
+    return await dioHelper.postData(
+        url: ESTIMATE_ORDERS_END_POINT,
+        token: token,
+        data: {
+          "use_points": false,
+          "promo_code_id":promoId
+        });
+  }
+
+  @override
+  Future<Response> userLogout({String token}) async {
+    return await dioHelper.postData(
+        url: LOGOUT_END_POINT, token: token, data: {"fcm_token": "SomeFcmToken"});
+  }
+
+  @override
+  Future<Response> searchProducts({token, text}) async{
+    return await dioHelper.postData(
+        url: SEARCH_END_POINT, token: token, data: {"text": "$text"});
   }
 }

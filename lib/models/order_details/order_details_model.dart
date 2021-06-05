@@ -51,11 +51,11 @@ class Data {
 
   int id;
   dynamic cost;
-  int discount;
-  int points;
+  dynamic discount;
+  dynamic points;
   dynamic vat;
   dynamic total;
-  int pointsCommission;
+  dynamic pointsCommission;
   String promoCode;
   String paymentMethod;
   String date;

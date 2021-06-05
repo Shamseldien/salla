@@ -22,6 +22,29 @@ class GetCartInfoError extends AppStates{
   var error;
   GetCartInfoError(this.error);
 }
+
+class AppStateUserInfoSuccess extends AppStates{}
+class SearchStateOnType extends AppStates{}
+
+class ValidatePromoLoading extends AppStates{}
+class ValidatePromoSuccess extends AppStates{}
+class ValidatePromoError extends AppStates{
+  var error;
+  ValidatePromoError(this.error);
+}
+
+
+class EstimatePromoSuccess extends AppStates{}
+class EstimatePromoError extends AppStates{
+  var error;
+  EstimatePromoError(this.error);
+}
+
+
+class UserLogoutState extends AppStates{}
+class UserLogoutLoadingState extends AppStates{}
+
+
 class SelectAddressState extends AppStates{}
 class AddressLoadingState extends AppStates{}
 class DeleteAddressSuccessState extends AppStates{}

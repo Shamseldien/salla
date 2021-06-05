@@ -90,6 +90,11 @@
   "products": "Products",
   "quantity": "Quantity",
   "cancelOrder": "Cancel Order",
-  "price": "Price"
+  "apply": "Apply",
+  "price": "Price",
+  "promoText": "Congratulations, you got",
+  "cam":"Camera",
+  "gallery":"Gallery",
+  "noProduct":"Sorry, No products in this category"
 
 }

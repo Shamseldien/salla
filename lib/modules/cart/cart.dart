@@ -14,76 +14,82 @@ import 'package:salla/shared/style/styles.dart';
 class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-   return Directionality(
-     textDirection: AppCubit.get(context).appDirection,
-     child: BlocConsumer<AppCubit,AppStates>(
-         listener: (context,state){},
-         builder: (context,state){
-           var model = AppCubit.get(context).myCartModel;
-           return Scaffold(
+   return BlocConsumer<AppCubit,AppStates>(
+       listener: (context,state){},
+       builder: (context,state){
+         var model = AppCubit.get(context).myCartModel;
+         return Directionality(
+           textDirection: AppCubit.get(context).appDirection,
+           child: Scaffold(
              appBar: AppBar(
                title: Text('${appLang(context).cart}'),
                elevation: 1.0,
              ),
-             body: ConditionalBuilder(
-                 condition: model!=null,
-                 builder: (context)=>ConditionalBuilder(
-                     condition: model.data != null && model.data.cartItems.length>0,
-                     builder:(context)=>Column(
-                       children: [
-                         if(state is UpdateCartLoadingState)
-                           LinearProgressIndicator(
-                             backgroundColor: Colors.grey[300],
-                             valueColor: AlwaysStoppedAnimation<Color>(btnColor),
+             body: SafeArea(
+               child: ConditionalBuilder(
+                   condition: model!=null,
+                   builder: (context)=>ConditionalBuilder(
+                       condition: model.data != null && model.data.cartItems.length>0,
+                       builder:(context)=>Column(
+                         children: [
+                           if(state is UpdateCartLoadingState)
+                             LinearProgressIndicator(
+                               backgroundColor: Colors.grey[300],
+                               valueColor: AlwaysStoppedAnimation<Color>(btnColor),
+                             ),
+                           Expanded(
+                             child: ListView.separated(
+                               physics: BouncingScrollPhysics(),
+                               itemBuilder: (context,index)=>cartBuilder(model.data.cartItems[index],context),
+                               separatorBuilder: (context,index)=>Container(height: 1,width: double.infinity,color: Colors.grey[200],),
+                               itemCount: model.data.cartItems.length,
+                             ),
                            ),
-                         Expanded(
-                           child: ListView.separated(
-                             physics: BouncingScrollPhysics(),
-                             itemBuilder: (context,index)=>cartBuilder(model.data.cartItems[index],context),
-                             separatorBuilder: (context,index)=>Container(height: 1,width: double.infinity,color: Colors.grey[200],),
-                             itemCount: model.data.cartItems.length,
-                           ),
-                         ),
-                         Container(
-                             width: double.infinity,
-                             color: Colors.grey[200],
-                             height: 40,
-                             child: Row(
-                               mainAxisAlignment: MainAxisAlignment.center,
-                               children: [
-                                 Text('${appLang(context).subTotal}:  ',),
-                                 Text('${model.data.subTotal.round()}${appLang(context).currency}',),
-                               ],
-                             ),),
-                         Container(
-                             width: double.infinity,
-                             height: 50,
-                             child: MaterialButton(
+                           Container(
+                               width: double.infinity,
+                               color: Colors.grey[200],
+                               height: 40,
                                child: Row(
+                                 mainAxisAlignment: MainAxisAlignment.center,
                                  children: [
-                                   Text('${appLang(context).proceedTo}',style: white16(),),
-                                   Spacer(),
-                                   Icon(Icons.arrow_forward,color: Colors.white,),
+                                   Text('${appLang(context).subTotal}:  ',style: black14().copyWith(
+                                     color: Colors.black
+                                   ),),
+                                   Text('${model.data.subTotal.round()}${appLang(context).currency}',style: black14().copyWith(
+                                     color: Colors.black
+                                   ),),
                                  ],
-                               ),
-                               onPressed: (){
-                                 navigateTo(context: context, widget: CheckOutScreen());
-                               },color:btnColor,))
+                               ),),
+                           Container(
+                               width: double.infinity,
+                               height: 50,
+                               child: MaterialButton(
+                                 child: Row(
+                                   children: [
+                                     Text('${appLang(context).proceedTo}',style: white16(),),
+                                     Spacer(),
+                                     Icon(Icons.arrow_forward,color: Colors.white,),
+                                   ],
+                                 ),
+                                 onPressed: (){
+                                   navigateTo(context: context, widget: CheckOutScreen());
+                                 },color:btnColor,))
+                         ],
+                       ),
+                     fallback: (context)=>Center(child: Column(
+                       mainAxisSize: MainAxisSize.min,
+                       children: [
+                         Image(image: AssetImage('assets/images/emptystate.png'),),
+                        // SizedBox(height: 20,),
+                         Text('${appLang(context).emptyCart}',style: black18(),)
                        ],
-                     ),
-                   fallback: (context)=>Center(child: Column(
-                     mainAxisSize: MainAxisSize.min,
-                     children: [
-                       Image(image: AssetImage('assets/images/emptystate.png'),),
-                      // SizedBox(height: 20,),
-                       Text('${appLang(context).emptyCart}',style: black18(),)
-                     ],
-                   ),),
-                 ),
-               fallback: (context)=>Center(child: loadingIndicator(),),
-             ));
-         },
-     ),
+                     ),),
+                   ),
+                 fallback: (context)=>Center(child: loadingIndicator(),),
+               ),
+             )),
+         );
+       },
    );
   }
 

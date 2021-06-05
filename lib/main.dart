@@ -6,7 +6,9 @@ import 'package:salla/layout/home_layout.dart';
 import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/modules/orders/bloc/cubit.dart';
 import 'package:salla/modules/product_info/bloc/cubit.dart';
+import 'package:salla/modules/search/bloc/cubit.dart';
 import 'package:salla/modules/select_laguage/select_lang.dart';
+import 'package:salla/modules/single_category/bloc/cubit.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/constant.dart';
@@ -49,7 +51,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context)=>di<AppCubit>()..setAppTheme()..setAppLanguage(
             translationFile: transFile,
             code: code)
-          ..getUserInfo()
           ..getHomeData()
           ..getCategories()
           ..getCartInfo()
@@ -58,6 +59,8 @@ class MyApp extends StatelessWidget {
             ..getUserInfo()),
     BlocProvider(create: (context)=>di<MyOrdersCubit>()),
     BlocProvider(create: (context)=>di<ProductInfoCubit>()),
+    BlocProvider(create: (context)=>di<SingleCatCubit>()),
+    BlocProvider(create: (context)=>di<SearchCubit>()),
       ],
       child: BlocConsumer<AppCubit,AppStates>(
           listener: (context,state){},

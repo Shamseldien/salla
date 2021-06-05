@@ -12,4 +12,5 @@ class AuthErrorState extends AuthStates{
   AuthErrorState(this.error);
 }
 class AuthSelectImageState extends AuthStates{}
+class AuthSelectImageLoadingState extends AuthStates{}
 class AuthShowPassState extends AuthStates{}

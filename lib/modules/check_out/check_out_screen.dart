@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/models/address/address_model.dart';
@@ -13,16 +15,16 @@ class CheckOutScreen extends StatelessWidget {
   var promoCon = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: AppCubit.get(context).appDirection,
-      child: BlocConsumer<AppCubit, AppStates>(
-        listener: (context, state) {
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {
 
-        },
-        builder: (context, state) {
-          var cubit = AppCubit.get(context);
-          var model = AppCubit.get(context).addressModel;
-          return Scaffold(
+      },
+      builder: (context, state) {
+        var cubit = AppCubit.get(context);
+        var model = AppCubit.get(context).addressModel;
+        return Directionality(
+          textDirection: AppCubit.get(context).appDirection,
+          child: Scaffold(
             appBar: AppBar(
               elevation: 0.5,
               title: Text(appLang(context).checkOut),
@@ -46,7 +48,7 @@ class CheckOutScreen extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                appLang(context).totalPrice,
+                                appLang(context).price,
                                 style: black18(),
                               ),
                               Spacer(),
@@ -72,11 +74,14 @@ class CheckOutScreen extends StatelessWidget {
                                    textAlignVertical: TextAlignVertical.center,
                                     cursorHeight: 20,
                                     maxLines: 1,
+                                    enabled: cubit.promoValidateModel!=null && cubit.promoValidateModel.status && promoCon.text.isNotEmpty?false:true,
                                     decoration: InputDecoration(
                                       hintStyle: grey14(),
                                       isCollapsed: true,
                                       contentPadding: EdgeInsets.all(9),
                                       isDense: true,
+                                      disabledBorder:OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.lightBlue.withOpacity(0.50))),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: btnColor.withOpacity(0.50))),
                                       focusedBorder: OutlineInputBorder(
@@ -84,7 +89,56 @@ class CheckOutScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              )
+                              ),
+                              cubit.promoValidateModel!=null && cubit.promoValidateModel.status&&promoCon.text.isNotEmpty
+                              ?Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                                child: Icon(Icons.done,color: Colors.lightBlue,))
+                              :TextButton(onPressed: (){
+                                cubit.validatePromo(
+                                  promo:promoCon.text).then((value){
+                                    if(!cubit.promoValidateModel.status){
+                                      showToast(text:cubit.promoValidateModel.message,color: toastMessagesColors.ERROR);
+                                    }else{
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context)=>Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Card(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(15),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Image(image: AssetImage('assets/images/box.gif'),),
+                                                    Text('${appLang(context).promoText} ${cubit.promoValidateModel.data.percentage}% ${appLang(context).disc}.'),
+                                                    TextButton(onPressed: (){
+                                                      Navigator.pop(context);
+                                                    }, child: Text('${appLang(context).continueShop}')),
+                                                  ],
+                                                ),
+                                              ),
+                                              elevation: 2.0,
+                                            ),
+                                          ],
+                                        ),);
+                                    }
+
+                                });
+
+                              }, child:state is ValidatePromoLoading
+                                  ?  Center(
+                                  child: Container(
+                                  height: 15,
+                                  width: 15,
+                                  child: CircularProgressIndicator())) : Text('${appLang(context).apply}'),
+                              ),
                             ],
                           ),
 
@@ -208,10 +262,13 @@ class CheckOutScreen extends StatelessWidget {
                                   showDialog(
                                       context: context,
                                       barrierDismissible: false,
-                                      builder: (context) => orderSuccess(
+                                      builder: (context) {
+                                        promoCon.clear();
+                                        return orderSuccess(
                                           msg: cubit.addOrderModel.message,
                                           context: context,
-                                      ),
+                                      );
+                                      },
                                   );
                                 }else if(state is! CheckOutLoadingState && !cubit.addOrderModel.status){
                                   showToast(text: '${cubit.addOrderModel.message}', color: toastMessagesColors.WARNING);
@@ -242,9 +299,9 @@ class CheckOutScreen extends StatelessWidget {
               ],
             )
             :Center(child: loadingIndicator()),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
