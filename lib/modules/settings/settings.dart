@@ -188,27 +188,8 @@ class SettingsScreen extends StatelessWidget {
                         SizedBox(height: 5,),
                         settingsItem(
                           function: (){
+                            cubit.userLogout(context);
 
-                            cubit.userLogout(context).then((value){
-                              navigateToAndFinish(context: context, widget: LoginScreen());
-                            });
-
-
-                            // showDialog(context: context, builder: (context)=>AlertDialog(
-                            //   content: Padding(
-                            //     padding: const EdgeInsets.all(15.0),
-                            //     child: Text('Are you sure to log out ?'),
-                            //   ),
-                            //   actions: [
-                            //     TextButton(onPressed: (){
-                            //       Navigator.pop(context);
-                            //
-                            //     }, child: Text('Yes')),
-                            //     TextButton(onPressed: (){
-                            //       Navigator.pop(context);
-                            //     }, child: Text('Cancel')),
-                            //   ],
-                            // ));
                           },
                           text: '${appLang(context).logOut}',
                           icon: IconBroken.Logout,
@@ -265,14 +246,4 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-
-
-Widget contactItems({color,image})=> Padding(
-  padding: const EdgeInsets.all(10.0),
-  child: Image(
-    width: 50,
-    height: 50,
-    color: color,
-    image: NetworkImage('https://student.valuxapps.com/storage/uploads/contacts/Snapchat.png',),),
-);
 }

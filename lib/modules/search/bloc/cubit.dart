@@ -25,7 +25,7 @@ class SearchCubit extends Cubit<SearchStates> {
   }
 
 Future clearHistory()async{
-    await clearSearchHistory().then((value) {
+    await deleteSearchHistory().then((value) {
       recent.clear();
       emit(SearchStateClearHistory());
     });

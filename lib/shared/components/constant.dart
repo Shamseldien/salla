@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
+import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/language/language_model.dart';
 import 'package:salla/shared/network/local/cash_helper.dart';
@@ -31,7 +33,7 @@ Future getSearchHistory()async {
   return await di<CashHelper>().get(key: SEARCH_HISTORY_KEY);
 }
 
-Future<bool>clearSearchHistory()async{
+Future<bool>deleteSearchHistory()async{
   return await di<CashHelper>().clear(key: SEARCH_HISTORY_KEY);
 }
 
@@ -54,7 +56,7 @@ Future<String>getTranslationFile(appLang)async{
 
 Future<bool> deleteUserToken() async
 {
-  return await di<CashHelper>().clear(key:USER_TOKEN_KEY);
+  return await di<CashHelper>().clear(key: USER_TOKEN_KEY);
 }
 
 AppLanguageModel appLang(context) => AppCubit.get(context).appLanguageModel;

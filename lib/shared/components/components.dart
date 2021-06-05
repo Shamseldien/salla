@@ -240,7 +240,7 @@ Widget orderSuccess({msg,context})=>Column(
                 onPressed: () {
                   Navigator.pop(
                       context);
-                  navigateToAndFinish(context: context, widget: CheckOutDetails());
+                  navigateAndFinish(context: context, widget: CheckOutDetails());
 
 
                 },
@@ -816,19 +816,16 @@ Future navigateTo({
           duration: Duration(milliseconds: 900)));
 }
 
-Future navigateToAndFinish({
-  @required context,
-  @required widget,
-}) async {
-    return Navigator.pushAndRemoveUntil(
-        context,
-        PageTransition(
-            child: widget,
-            type: PageTransitionType.slideZoomLeft,
-            duration: Duration(milliseconds: 900)),
-            (route) => false);
 
-}
+void navigateAndFinish({context, widget}) => Navigator.pushAndRemoveUntil(
+  context,
+  PageTransition(
+      child: widget,
+      type: PageTransitionType.slideZoomLeft,
+      duration: Duration(milliseconds: 900)),
+      (Route<dynamic> route) => false,
+);
+
 Widget settingsItem({text,iconColor,icon,function,suffix})=> ListTile(
   onTap: function,
   hoverColor: iconColor,

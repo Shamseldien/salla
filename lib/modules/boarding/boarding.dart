@@ -5,6 +5,8 @@ import 'package:salla/models/board/board_model.dart';
 import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/components/components.dart';
+import 'package:salla/shared/components/components.dart';
+import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/style/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -106,7 +108,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
                             ),
                             onPressed: () {
                               if (isLast) {
-                                navigateToAndFinish(
+                                navigateAndFinish(
                                   context: context,
                                   widget: LoginScreen(),
                                 );

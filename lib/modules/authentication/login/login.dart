@@ -22,46 +22,46 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di<AuthCubit>(),
-      child: BlocConsumer<AuthCubit, AuthStates>(
-          listener: (context, state) {
-            if (state is AuthSuccessState) {
-              di<CashHelper>()
-                  .put(
-                  key: USER_TOKEN_KEY,
-                  value: state.userInfoModel.data.token)
-                  .then((value)async {
-                        print(state.userInfoModel.message);
-                         await getUserToken().then((value){
-                           userToken = value;
-                           navigateToAndFinish(context: context, widget: HomeLayout());
-                        });
-                di<CashHelper>().put(
-                    key: USER_Model_Info_KEY,
-                    value: state.userInfoModel).then((value) {
-                  AppCubit.get(context)..changeIndex(0)..getHomeData()
-                    ..getCategories()
-                    ..getCartInfo()
-                    ..getFavorites()
-                    ..getAddress()
-                    ..getUserInfo();
-                  print(state.userInfoModel.data.token);
+    return BlocConsumer<AuthCubit, AuthStates>(
+        listener: (context, state) {
+          if (state is AuthSuccessState) {
+            di<CashHelper>()
+                .put(
+                key: USER_TOKEN_KEY,
+                value: state.userInfoModel.data.token)
+                .then((value)async {
+                      print(state.userInfoModel.message);
+                       await getUserToken().then((value){
+                         userToken = value;
+                         navigateAndFinish(context: context, widget: HomeLayout());
+                      });
+              di<CashHelper>().put(
+                  key: USER_Model_Info_KEY,
+                  value: state.userInfoModel).then((value) {
+                AppCubit.get(context)..getUserInfo()..changeIndex(0)..getHomeData()
+                  ..getCategories()
+                  ..getCartInfo()
+                  ..getFavorites()
+                  ..getAddress()
+                  ;
+                print(state.userInfoModel.data.token);
 
-                }).catchError((error){
-                  print('tokenError===>>${error.toString()}');
-                });
-              }).catchError((error) {
-                print('userModelError===>>${error.toString()}');
+              }).catchError((error){
+                print('tokenError===>>${error.toString()}');
               });
-            }
-          },
-          builder: (context, state) {
-            var cubit = AuthCubit.get(context);
-            return SafeArea(
-              child: Scaffold(
-                backgroundColor: bkColor,
-                body: Stack(
+            }).catchError((error) {
+              print('userModelError===>>${error.toString()}');
+            });
+          }
+        },
+        builder: (context, state) {
+          var cubit = AuthCubit.get(context);
+          return SafeArea(
+            child: Scaffold(
+              backgroundColor: bkColor,
+              body: Directionality(
+                textDirection: AppCubit.get(context).appDirection,
+                child: Stack(
                   alignment: Alignment.center,
                   children: [
                     CustomScrollView(
@@ -218,9 +218,9 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            );
-          },
-        ),
-    );
+            ),
+          );
+        },
+      );
   }
 }

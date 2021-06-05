@@ -8,7 +8,6 @@ abstract class CashHelper{
   Future<bool> put({@required String key,@required dynamic value});
   Future<bool> has({@required String key});
   Future<bool> clear({@required String key});
-
 }
 
 
@@ -50,6 +49,7 @@ class CashImplementation extends CashHelper{
     });
     return f;
   }
+
 
 }
 extension on CashHelper

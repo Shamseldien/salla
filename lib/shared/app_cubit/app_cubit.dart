@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:salla/layout/home_layout.dart';
@@ -13,26 +12,21 @@ import 'package:salla/models/categories_model/categories_model.dart';
 import 'package:salla/models/add_favorites/favorites_model.dart';
 import 'package:salla/models/favorites/my_favorites_model.dart';
 import 'package:salla/models/home_model/home_models.dart';
-import 'package:salla/models/orders/orders_model.dart';
 import 'package:salla/models/promo_estimate/promo_estimate_model.dart';
 import 'package:salla/models/promo_validate/promo_validate.dart';
 import 'package:salla/models/user_info/user_info_model.dart';
 import 'package:salla/modules/authentication/login/login.dart';
-import 'package:salla/modules/cart/cart.dart';
 import 'package:salla/modules/categories/categories.dart';
 import 'package:salla/modules/favorites/favorites.dart';
 import 'package:salla/modules/home/home.dart';
-import 'package:salla/modules/orders/bloc/cubit.dart';
+import 'package:salla/modules/search/bloc/cubit.dart';
 import 'package:salla/modules/settings/settings.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
+import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
-import 'package:salla/shared/di/di.dart';
 import 'package:salla/shared/language/language_model.dart';
-import 'package:salla/shared/network/local/cash_helper.dart';
 import 'package:salla/shared/network/repository.dart';
-import 'package:salla/shared/style/colors.dart';
-import 'package:salla/shared/style/styles.dart';
 
 class AppCubit extends Cubit<AppStates> {
   Repository repository;
@@ -188,7 +182,7 @@ class AppCubit extends Cubit<AppStates> {
 
   void continueShopping(context){
     changeIndex(0);
-    navigateToAndFinish(context: context, widget: HomeLayout());
+    navigateAndFinish(context: context, widget: HomeLayout());
     emit(BackHomeState());
   }
 
@@ -257,15 +251,21 @@ class AppCubit extends Cubit<AppStates> {
       emit(EstimatePromoError(error));
     });
   }
-  Future<void> userLogout(context) async{
+
+  void userLogout(context)  {
     emit(UserLogoutLoadingState());
-    await repository.userLogout(token: userToken).then((value)async {
+    repository.userLogout(token: userToken).then((value) {
       print(value.data.toString());
-     await deleteUserToken();
-     await clearSearchHistory();
+      deleteUserToken();
+      deleteSearchHistory().then((value){
+        SearchCubit.get(context).recent.clear();
+      });
+      navigateAndFinish(context: context,widget: LoginScreen());
       emit(UserLogoutState());
     });
   }
+
+
 
   Future checkOut({addressId, promo}) async{
     emit(CheckOutLoadingState());

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salla/layout/bloc/cubit.dart';
 import 'package:salla/layout/home_layout.dart';
+import 'package:salla/modules/authentication/bloc/cubit.dart';
 import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/modules/orders/bloc/cubit.dart';
 import 'package:salla/modules/product_info/bloc/cubit.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           ..getFavorites()
           ..getAddress()
             ..getUserInfo()),
+    BlocProvider(create: (context) => di<AuthCubit>(),),
     BlocProvider(create: (context)=>di<MyOrdersCubit>()),
     BlocProvider(create: (context)=>di<ProductInfoCubit>()),
     BlocProvider(create: (context)=>di<SingleCatCubit>()),
