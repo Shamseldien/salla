@@ -6,3 +6,8 @@ class NewAddressStateError extends NewAddressStates{
   var error;
   NewAddressStateError(this.error);
 }
+
+
+class GeoLocationStateLoading extends NewAddressStates{}
+class GeoLocationStateSuccess extends NewAddressStates{}
+class GeoLocationStateError extends NewAddressStates{}

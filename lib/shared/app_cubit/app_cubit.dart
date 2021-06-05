@@ -146,8 +146,8 @@ class AppCubit extends Cubit<AppStates> {
     emit(SearchStateOnType());
   }
 
-  void getAddress() {
-    //  emit(HomeLoadingState()w);
+  Future getAddress() async {
+    //  emit(HomeLoadingState());
     if(userToken!=null && userToken !='')
       repository.getAddresses(token: userToken).then((value) {
         addressModel = AddressModel.fromJson(value.data);

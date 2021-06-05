@@ -2,6 +2,7 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:salla/modules/address/address_screen.dart';
 import 'package:salla/modules/authentication/login/login.dart';
 import 'package:salla/modules/cart/cart.dart';
 import 'package:salla/modules/orders/my_orders.dart';
@@ -73,6 +74,15 @@ class SettingsScreen extends StatelessWidget {
                           text: '${appLang(context).cart}',
                           icon: IconBroken.Buy,
                           iconColor: Colors.deepPurpleAccent,
+                        ),
+                        SizedBox(height: 5,),
+                        settingsItem(
+                          function: (){
+                            navigateTo(context: context, widget: AddressScreen());
+                          },
+                          text: '${appLang(context).addresses}',
+                          icon: IconBroken.Paper_Negative,
+                          iconColor: Colors.blue,
                         ),
                         SizedBox(height: 5,),
                         settingsItem(

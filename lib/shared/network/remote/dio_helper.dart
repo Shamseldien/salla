@@ -18,7 +18,7 @@ abstract class DioHelper {
 
   Future<Response> putData({
     @required String url,
-    @required dynamic data,
+    dynamic data,
     String token,
   });
 

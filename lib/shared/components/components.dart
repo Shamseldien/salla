@@ -263,6 +263,52 @@ Widget orderSuccess({msg,context})=>Column(
     )
   ],
 );
+
+Widget address({Address address, context})=>Padding(
+  padding: const EdgeInsets.symmetric(vertical: 10),
+  child: Padding(
+    padding: const EdgeInsets.all(15.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(appLang(context).shippingCity,),
+            SizedBox(height: 5,),
+            Text(appLang(context).shippingRegion,),
+            SizedBox(height: 5,),
+            Text(appLang(context).shippingAddressDetails,),
+            SizedBox(height: 5,),
+            Text(appLang(context).shippingNotes,),
+          ],
+        ),
+        SizedBox(width: 30,),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${address.city}',style: grey14(),maxLines: 1,overflow: TextOverflow.ellipsis,),
+              SizedBox(height: 5,),
+              Text('${address.region}',style: grey14(),maxLines: 1,overflow: TextOverflow.ellipsis),
+              SizedBox(height: 5,),
+              Text('${address.details}, ${address.region}, ${address.city}',style: grey14(),maxLines: 1,overflow: TextOverflow.ellipsis),
+              SizedBox(height: 5,),
+              Text('${address.notes}',style: grey14(),maxLines: 1,overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+
+
 Widget addressBuilder({Address address,context,bool isSelected,selectAdd,})=> Card(
   child: InkWell(
     onTap: selectAdd,
@@ -311,23 +357,23 @@ Widget addressBuilder({Address address,context,bool isSelected,selectAdd,})=> Ca
                 ],
               ),
               SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(icon: Icon(Icons.edit,color: Colors.green,), onPressed: (){
-
-                  }),
-                  IconButton(icon: Icon(Icons.delete_forever,
-                    color: btnColor,
-                  ),
-                      onPressed: (){
-
-                    AppCubit.get(context).deleteAdd(id: address.id);
-                    AppCubit.get(context).addressLength=null;
-
-                      }),
-                ],
-              )
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: [
+              //     IconButton(icon: Icon(Icons.edit,color: Colors.green,), onPressed: (){
+              //
+              //     }),
+              //     IconButton(icon: Icon(Icons.delete_forever,
+              //       color: btnColor,
+              //     ),
+              //         onPressed: (){
+              //
+              //       AppCubit.get(context).deleteAdd(id: address.id);
+              //       AppCubit.get(context).addressLength=null;
+              //
+              //         }),
+              //   ],
+              // )
             ],
           ),
         ),
