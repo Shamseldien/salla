@@ -27,7 +27,7 @@ class AddressScreen extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.add_location_alt_outlined),
                 onPressed: (){
-                  navigateTo(context: context, widget: AddNewAddress());
+                  navigateTo(context: context, widget: AddNewAddress(update: false,));
                 },
               )
             ],
@@ -66,7 +66,7 @@ class AddressScreen extends StatelessWidget {
                                 id: addressModel.data.data[index].id,
                                 lat:addressModel.data.data[index].latitude ,
                                 long: addressModel.data.data[index].longitude,
-                                update: 'update',
+                                update: true,
                               ));
                             },
                           ),

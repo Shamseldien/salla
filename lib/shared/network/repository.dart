@@ -49,17 +49,17 @@ abstract class Repository {
       double longitude,
       String notes});
 
-  Future<Response> updateAddress(
-      {token,
-      String name,
-      String city,
-      String region,
-      String details,
-      double latitude,
-      double longitude,
-      String notes,
-        id
-      });
+  Future<Response> updateAddress({
+    addressId,
+    token,
+    String name,
+    String city,
+    String region,
+    String details,
+    double latitude,
+    double longitude,
+    String notes,
+  });
 
   Future<Response> addOrRemoveCart({token, id});
 
@@ -290,19 +290,19 @@ class RepositoryImplementation extends Repository {
   }
 
   @override
-  Future<Response> updateAddress(
-      {token,
-      String name,
-      String city,
-      String region,
-      String details,
-      double latitude,
-      double longitude,
-      String notes,
-        id
-      }) async{
+  Future<Response> updateAddress({
+    addressId,
+    token,
+    String name,
+    String city,
+    String region,
+    String details,
+    double latitude,
+    double longitude,
+    String notes,
+  }) async {
     return await dioHelper
-        .postData(url: '$ADDRESS_END_POINT/$id', token: token, data: {
+        .putData(url: '${ADDRESS_END_POINT}/$addressId',token: token, data: {
       "name": name,
       "city": city,
       "region": region,

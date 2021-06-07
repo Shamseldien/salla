@@ -1,4 +1,5 @@
 import 'package:conditional_builder/conditional_builder.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,19 +15,25 @@ import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/di/di.dart';
+import 'package:salla/shared/network/remote/network_connection.dart';
 import 'package:salla/shared/style/colors.dart';
 import 'package:salla/shared/style/icon_broken.dart';
 import 'package:salla/shared/style/styles.dart';
 
 class HomeLayout extends StatelessWidget {
   var searchCon = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+
+      },
       builder: (context, state) {
+
         var cubit = AppCubit.get(context);
+        // cubit.networkListener().then((value) {
+        //   cubit.subscription.cancel();
+        // });
         return Directionality(
           textDirection: AppCubit.get(context).appDirection,
           child: Scaffold(
@@ -151,9 +158,9 @@ class HomeLayout extends StatelessWidget {
                   ),
                 ],
               ),
-              body: Stack(
+              body:Stack(
                 children: [
-                  cubit.pages[cubit.currentIndex],
+               cubit.pages[cubit.currentIndex],
                   if (cubit.isType && SearchCubit.get(context).recent!=null && SearchCubit.get(context).recent.length>0 )
                    BlocConsumer<SearchCubit,SearchStates>(
                        listener: (context,state){},

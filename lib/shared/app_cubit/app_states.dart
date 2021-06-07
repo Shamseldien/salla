@@ -16,6 +16,10 @@ class BackHomeState extends AppStates{}
 class ChangeThemeState extends AppStates{}
 class SetAppThemeState extends AppStates{}
 
+class ConnectionStatusSuccessState extends AppStates{}
+class ConnectionStatusListenerState extends AppStates{}
+class ConnectionStatusErrorState extends AppStates{}
+
 class GetCartInfoLoading extends AppStates{}
 class GetCartInfoSuccess extends AppStates{}
 class GetCartInfoError extends AppStates{

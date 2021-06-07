@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:salla/layout/home_layout.dart';
@@ -26,6 +30,7 @@ import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/components/components.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/language/language_model.dart';
+import 'package:salla/shared/network/remote/network_connection.dart';
 import 'package:salla/shared/network/repository.dart';
 
 class AppCubit extends Cubit<AppStates> {
@@ -39,7 +44,6 @@ class AppCubit extends Cubit<AppStates> {
     false,
     false,
   ];
-
 
   int selectedLanguageIndex;
 
@@ -58,17 +62,16 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   bool isDark = false;
-  Future changeAppTheme({bool value})async{
+
+  Future changeAppTheme({bool value}) async {
     await saveThemeMode(isDark: value);
     this.isDark = value;
     emit(ChangeThemeState());
   }
 
-
-  Future setAppTheme()async{
-    isDark =await getThemeMode() ?? false;
-   emit(ChangeThemeState());
-
+  Future setAppTheme() async {
+    isDark = await getThemeMode() ?? false;
+    emit(ChangeThemeState());
   }
 
   AppLanguageModel appLanguageModel;
@@ -113,7 +116,6 @@ class AppCubit extends Cubit<AppStates> {
     Colors.yellow,
     Colors.red,
     Colors.indigo,
-
   ];
 
   int currentIndex = 0;
@@ -122,8 +124,6 @@ class AppCubit extends Cubit<AppStates> {
     currentIndex = index;
     emit(ChangeIndex());
   }
-
-
 
   List<Widget> pages = [
     HomeScreen(),
@@ -139,8 +139,10 @@ class AppCubit extends Cubit<AppStates> {
     selectedAdd = index;
     emit(SelectAddressState());
   }
-  bool isType=false;
-  void changeIsType(bool isTyping){
+
+  bool isType = false;
+
+  void changeIsType(bool isTyping) {
     isType = isTyping;
     print(isType);
     emit(SearchStateOnType());
@@ -148,7 +150,7 @@ class AppCubit extends Cubit<AppStates> {
 
   Future getAddress() async {
     //  emit(HomeLoadingState());
-    if(userToken!=null && userToken !='')
+    if (userToken != null && userToken != '')
       repository.getAddresses(token: userToken).then((value) {
         addressModel = AddressModel.fromJson(value.data);
         // print(addressModel.data.data[0].name);
@@ -172,37 +174,35 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-
   var name = TextEditingController();
   var email = TextEditingController();
   var phone = TextEditingController();
   var pass = TextEditingController();
 
-
-
-  void continueShopping(context){
+  void continueShopping(context) {
     changeIndex(0);
     navigateAndFinish(context: context, widget: HomeLayout());
     emit(BackHomeState());
   }
 
-  Future getUserInfo()async{
+  Future getUserInfo() async {
     print(userToken);
-    if(userToken!=null){
-    return await  repository.getUserProfile(
+    if (userToken != null) {
+      return await repository
+          .getUserProfile(
         token: userToken,
-      ).then((value) {
+      )
+          .then((value) {
         userModel = UserInfoModel.fromJson(value.data);
-        if(userModel.status){
-          name.text=userModel.data.name;
-          email.text=userModel.data.email;
-          phone.text=userModel.data.phone;
+        if (userModel.status) {
+          name.text = userModel.data.name;
+          email.text = userModel.data.email;
+          phone.text = userModel.data.phone;
           emit(AppStateSuccess());
-        }else{
+        } else {
           print(userModel.message);
           emit(AppStateError(userModel.message));
         }
-
       }).catchError((error) {
         print('profileError$error}');
         emit(AppStateError(error));
@@ -210,66 +210,61 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
-  Future validatePromo({promo})async{
+  Future validatePromo({promo}) async {
     emit(ValidatePromoLoading());
-    return await repository.promoValidate(
-      token: userToken,
-      promo: promo
-    ).then((value)async {
+    return await repository
+        .promoValidate(token: userToken, promo: promo)
+        .then((value) async {
       promoValidateModel = PromoValidateModel.fromJson(value.data);
-      if(promoValidateModel.status)
-        {
-          print(value.data);
-        await estimateOrderCost().then((value){
-           emit(ValidatePromoSuccess());
-         });
-        }else{
+      if (promoValidateModel.status) {
+        print(value.data);
+        await estimateOrderCost().then((value) {
+          emit(ValidatePromoSuccess());
+        });
+      } else {
         print(value.data);
         emit(ValidatePromoError(promoValidateModel.message));
       }
-    }).catchError((error){
+    }).catchError((error) {
       emit(ValidatePromoError(error));
     });
   }
 
-
-  Future estimateOrderCost()async{
-    return await repository.estimateOrderCost(
-      token: userToken,
-      promoId: promoValidateModel.data.id
-    ).then((value) {
+  Future estimateOrderCost() async {
+    return await repository
+        .estimateOrderCost(
+            token: userToken, promoId: promoValidateModel.data.id)
+        .then((value) {
       promoEstimateModel = PromoEstimateModel.fromJson(value.data);
-      if(promoEstimateModel.status){
+      if (promoEstimateModel.status) {
         print(promoEstimateModel.data.total);
         emit(EstimatePromoSuccess());
-      }else{
+      } else {
         print(promoEstimateModel);
         emit(EstimatePromoError(promoEstimateModel.message));
       }
-    }).catchError((error){
+    }).catchError((error) {
       print(error);
       emit(EstimatePromoError(error));
     });
   }
 
-  void userLogout(context)  {
+  void userLogout(context) {
     emit(UserLogoutLoadingState());
     repository.userLogout(token: userToken).then((value) {
       print(value.data.toString());
       deleteUserToken();
-      deleteSearchHistory().then((value){
+      deleteSearchHistory().then((value) {
         SearchCubit.get(context).recent.clear();
       });
-      navigateAndFinish(context: context,widget: LoginScreen());
+      navigateAndFinish(context: context, widget: LoginScreen());
       emit(UserLogoutState());
     });
   }
 
-
-
-  Future checkOut({addressId, promo}) async{
+  Future checkOut({addressId, promo}) async {
     emit(CheckOutLoadingState());
-  return await repository
+    return await repository
         .confirmOrder(
             token: userToken,
             addressId: addressId,
@@ -299,10 +294,10 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void getCategories() {
-      emit(AppStateLoading());
-      if(userToken!=null && userToken !='')
-        repository.getCategories().then((value) {
-        print('categoriesData==>>${value.data}');
+    emit(AppStateLoading());
+    if (userToken != null && userToken != '')
+      repository.getCategories().then((value) {
+      //  print('categoriesData==>>${value.data}');
         categoriesModel = CategoriesModel.fromJson(value.data);
         //print(categoriesModel.status);
         //emit(AppStateSuccess());
@@ -310,18 +305,17 @@ class AppCubit extends Cubit<AppStates> {
         print('categoriesError==>>${error.toString()}');
         emit(AppStateError(error));
       });
-
   }
 
   void getHomeData() {
     //  emit(AppStateLoading());
     inFav.clear();
     inCart.clear();
-    cartProductsNumber=0;
-    favProductsNumber=0;
-    if(userToken!=null && userToken !='')
+    cartProductsNumber = 0;
+    favProductsNumber = 0;
+    if (userToken != null && userToken != '')
       repository.getHomeData(token: userToken).then((value) {
-        print('homeData=>>${value.data}');
+      //  print('homeData=>>${value.data}');
         homeModel = HomeModel.fromJson(value.data);
         homeModel.data.products.forEach((element) {
           inCart.addAll({element.id: element.inCart});
@@ -334,15 +328,17 @@ class AppCubit extends Cubit<AppStates> {
         print('homeDataError==>>${error.toString()}');
         emit(AppStateError(error));
       });
-
   }
 
   void addOrRemoveFavorite({id}) {
     changeLocalFav(id);
     emit(FavLoadingState());
-    repository.addOrRemoveFav(
+    repository
+        .addOrRemoveFav(
       token: userToken,
-      id: id,).then((value) {
+      id: id,
+    )
+        .then((value) {
       favoriteModel = FavoritesModel.fromJson(value.data);
       if (!favoriteModel.status) {
         changeLocalFav(id);
@@ -359,9 +355,12 @@ class AppCubit extends Cubit<AppStates> {
   void addOrRemoveCart({id}) {
     changeLocalCart(id);
     emit(CartLoadingState());
-    repository.addOrRemoveCart(
+    repository
+        .addOrRemoveCart(
       token: userToken,
-      id: id,).then((value) {
+      id: id,
+    )
+        .then((value) {
       cartModel = CartModel.fromJson(value.data);
       if (!cartModel.status) {
         changeLocalCart(id);
@@ -377,8 +376,9 @@ class AppCubit extends Cubit<AppStates> {
 
   void updateCart({id, int quantity}) {
     emit(UpdateCartLoadingState());
-    print('updateCartToken===>> $userToken');
-    repository.updateCart(token: userToken, id: id, quantity: quantity)
+   // print('updateCartToken===>> $userToken');
+    repository
+        .updateCart(token: userToken, id: id, quantity: quantity)
         .then((value) {
       getCartInfo();
     }).catchError((error) {
@@ -388,15 +388,14 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void getCartInfo() {
-
-      emit(GetCartInfoLoading());
-      if(userToken!=null && userToken !='')
-        repository
+    emit(GetCartInfoLoading());
+    if (userToken != null && userToken != '')
+      repository
           .getCartInfo(
         token: userToken,
       )
           .then((value) {
-        print('Cart==>>${value.data}');
+       // print('Cart==>>${value.data}');
         myCartModel = MyCartModel.fromJson(value.data);
         if (myCartModel.status) {
           emit(GetCartInfoSuccess());
@@ -407,14 +406,13 @@ class AppCubit extends Cubit<AppStates> {
         print('cartError==>>${error.toString()}');
         emit(GetCartInfoError(error));
       });
-
   }
 
   void getFavorites() {
     //  emit(HomeLoadingState());
-    if(userToken!=null && userToken !='')
+    if (userToken != null && userToken != '')
       repository.getFavorite(token: userToken).then((value) {
-        print('favData==>>${value.data}');
+       // print('favData==>>${value.data}');
         myFavoritesModel = MyFavoritesModel.fromJson(value.data);
         if (myFavoritesModel.status) {
           emit(AppStateSuccess());
@@ -425,7 +423,6 @@ class AppCubit extends Cubit<AppStates> {
         print('favError==>>${error.toString()}');
         emit(AppStateError(error));
       });
-
   }
 
   void changeLocalCart(id) {
@@ -445,5 +442,39 @@ class AppCubit extends Cubit<AppStates> {
       favProductsNumber--;
     }
   }
+
+  bool isConnected = false;
+
+
+void checkConnection(ConnectivityResult result){
+    final hasInternet = result!= ConnectivityResult.none;
+     if(hasInternet) {
+       isConnected = true;
+       reloadData();
+     }else{
+       isConnected = false;
+
+     }
+emit(ConnectionStatusListenerState());
+}
+
+  StreamSubscription subscription;
+
+  Future networkListener()async{
+    subscription =
+        Connectivity().onConnectivityChanged.listen(checkConnection);
+    emit(ConnectionStatusListenerState());
+}
+
+
+void reloadData(){
+  getHomeData();
+  getCategories();
+  getCartInfo();
+  getFavorites();
+  getAddress();
+  getUserInfo();
+}
+
 
 }

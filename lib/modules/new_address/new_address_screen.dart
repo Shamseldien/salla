@@ -26,7 +26,7 @@ class AddNewAddress extends StatelessWidget {
   var id;
   var lat;
   var long;
-  String update;
+  bool update;
   AddNewAddress({this.name,this.city,this.region,this.note,this.details,this.update,this.id,this.lat,this.long});
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class AddNewAddress extends StatelessWidget {
            textDirection: AppCubit.get(context).appDirection,
            child: Scaffold(
              appBar: AppBar(
-               title: Text(this.update==null ? appLang(context).newAddress : 'Edit address'),
+               title: Text(!this.update ? appLang(context).newAddress : 'Edit address'),
                elevation: 1.0,
              ),
              body:  Stack(
@@ -91,7 +91,7 @@ class AddNewAddress extends StatelessWidget {
                                    ],
                                  ),
                                ),
-                               if(this.update==null)
+                               if(!this.update)
                                  Column(
                                  children: [
                                    Container(
@@ -116,11 +116,12 @@ class AddNewAddress extends StatelessWidget {
                                    Text('Select Current Location ?'),
                                  ],
                                ),
+
                                  Column(
                                  children: [
                                      defaultBtn(
                                        function: () async{
-                                         if(this.update==null) {
+                                         if(!this.update) {
                                             if (formKey.currentState.validate()) {
                                               if (nameCon.text.isNotEmpty &&
                                                   cityCon.text.isNotEmpty &&
@@ -134,6 +135,7 @@ class AddNewAddress extends StatelessWidget {
                                                   region: regionCon.text,
                                                   details: detailsCon.text,
                                                   notes: notesCon.text,
+
                                                 )
                                                     .then((value) async {
                                                   await AppCubit.get(context)
@@ -151,15 +153,15 @@ class AddNewAddress extends StatelessWidget {
                                                  regionCon.text.isNotEmpty &&
                                                  detailsCon.text.isNotEmpty &&
                                                  notesCon.text.isNotEmpty) {
-                                               await cubit.updateAddress(
+                                               cubit.updateAddress(
+                                                 addressId: this.id,
                                                  name: nameCon.text,
                                                  city: cityCon.text,
                                                  region: regionCon.text,
                                                  details: detailsCon.text,
                                                  notes: notesCon.text,
-                                                 latitude: lat,
-                                                 longitude: long,
-                                                 id: id
+                                                 longitude: this.long,
+                                                 latitude: this.lat
                                                ).then((value) async {
                                                  await AppCubit.get(context)
                                                      .getAddress()
@@ -171,7 +173,7 @@ class AddNewAddress extends StatelessWidget {
                                            }
                                          }
                                         },
-                                       text: this.update==null ? appLang(context).done : appLang(context).update)
+                                       text: !this.update ? appLang(context).done : appLang(context).update)
                                  ],
                                )
                              ],

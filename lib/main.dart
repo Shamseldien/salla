@@ -14,12 +14,12 @@ import 'package:salla/shared/app_cubit/app_cubit.dart';
 import 'package:salla/shared/app_cubit/app_states.dart';
 import 'package:salla/shared/components/constant.dart';
 import 'package:salla/shared/di/di.dart';
+import 'package:salla/shared/network/remote/network_connection.dart';
 import 'package:salla/shared/style/styles.dart';
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   await initApp();
-
   appLanguage = await getLangCode();
   userToken = await getUserToken();
   String translationFile = await  getTranslationFile(appLanguage);
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           ..getCartInfo()
           ..getFavorites()
           ..getAddress()
-            ..getUserInfo()),
+          ..getUserInfo()),
     BlocProvider(create: (context) => di<AuthCubit>(),),
     BlocProvider(create: (context)=>di<MyOrdersCubit>()),
     BlocProvider(create: (context)=>di<ProductInfoCubit>()),

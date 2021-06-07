@@ -34,11 +34,15 @@ class NewAddressCubit extends Cubit<NewAddressStates>{
           print("${myAddress.featureName} : ${myAddress.addressLine}");
           print('done');
           emit(GeoLocationStateSuccess());
+        }).catchError((error){
+          print(error);
+          emit(GeoLocationStateError());
         });
         print(position.latitude);
         print(position.longitude);
       }
     }).catchError((error) {
+      print(error);
       emit(GeoLocationStateError());
     });
   }
@@ -65,28 +69,57 @@ class NewAddressCubit extends Cubit<NewAddressStates>{
   }
 
 
-  Future updateAddress({String name,String city,String region,String details,String notes,id,latitude,longitude})async{
+  // Future updateAddress({String name,String city,String region,String details,String notes,id,latitude,longitude})async{
+  //   emit(NewAddressStateLoading());
+  //   await repository.updateAddress(
+  //       token: userToken,
+  //       name: name,
+  //       city: city,
+  //       details: details,
+  //       latitude:  latitude,
+  //       longitude: longitude,
+  //       notes: notes,
+  //       region: region,
+  //       addressId: id
+  //   ).then((value){
+  //     emit(NewAddressStateSuccess());
+  //   }).catchError((error){
+  //     print(error.toString());
+  //     emit(NewAddressStateError(error));
+  //   });
+  // }
+
+
+  Future updateAddress({
+    addressId,
+    String name,
+    String city,
+    String region,
+    String details,
+    double latitude,
+    double longitude,
+    String notes,
+  }) async {
     emit(NewAddressStateLoading());
-    await repository.updateAddress(
+    await repository
+        .updateAddress(
+        addressId: addressId,
         token: userToken,
         name: name,
         city: city,
         details: details,
-        latitude:  latitude,
+        latitude: latitude,
         longitude: longitude,
         notes: notes,
-        region: region,
-        id: id
-    ).then((value){
+        region: region)
+        .then((value) {
+      print(value.data);
       emit(NewAddressStateSuccess());
-    }).catchError((error){
+    }).catchError((error) {
       print(error.toString());
       emit(NewAddressStateError(error));
     });
   }
-
-
-
 
 
 }
