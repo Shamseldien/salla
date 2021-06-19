@@ -95,6 +95,21 @@
   "promoText": "Congratulations, you got",
   "cam":"Camera",
   "gallery":"Gallery",
-  "noProduct":"Sorry, No products in this category"
+  "noProduct":"Sorry, No products in this category",
+  "search": "Search Product",
+  "editAddress": "Edit address",
+  "country": "Country",
+  "countryError": "country must not be empty",
+  "city": "City",
+  "cityError": "city must not be empty",
+  "region": "Region",
+  "regionError": "region must not be empty",
+  "details": "Details",
+  "detailsError": "details must not be empty",
+  "notes": "Notes",
+  "notesError": "add some note for your address like Home, work ,etc...",
+  "currentLocation": "Select Current Location ?",
+  "edit": "Edit",
+  "delete": "Delete"
 
 }

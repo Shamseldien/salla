@@ -19,87 +19,90 @@ class AddressScreen extends StatelessWidget {
         var cubit = AppCubit.get(context);
         var addressModel = AppCubit.get(context).addressModel;
 
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 1.0,
-            title: Text('${appLang(context).addresses}'),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.add_location_alt_outlined),
-                onPressed: (){
-                  navigateTo(context: context, widget: AddNewAddress(update: false,));
-                },
-              )
-            ],
-          ),
-          body: ConditionalBuilder(
-            condition: addressModel!=null && addressModel.data.data.length>0,
-            builder: (context)=>Column(
-              children: [
-                if(state is AddressLoadingState)
-                  LinearProgressIndicator(
-                    backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation<Color>(btnColor),
-                  ),
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: addressModel.data.data.length,
-                    itemBuilder: (context,index){
-                      return Slidable(
-                        actionPane: SlidableDrawerActionPane(),
-                        actionExtentRatio: 0.20,
-                        child: address(
-                            context: context,
-                            address: addressModel.data.data[index]),
-                        secondaryActions: [
-                          IconSlideAction(
-                            caption: 'Edit',
-                            color: Colors.green,
-                            icon: IconBroken.Edit,
-                            onTap: (){
-                              navigateTo(context: context, widget: AddNewAddress(
-                                name: addressModel.data.data[index].name,
-                                city : addressModel.data.data[index].city,
-                                details : addressModel.data.data[index].details,
-                                region: addressModel.data.data[index].region,
-                                note: addressModel.data.data[index].notes,
-                                id: addressModel.data.data[index].id,
-                                lat:addressModel.data.data[index].latitude ,
-                                long: addressModel.data.data[index].longitude,
-                                update: true,
-                              ));
-                            },
-                          ),
-                          IconSlideAction(
-                            caption: 'Delete',
-                            color: btnColor,
-                            icon: IconBroken.Delete,
-                            onTap: (){
-                              AppCubit.get(context).deleteAdd(id: addressModel.data.data[index].id);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                    separatorBuilder: (context,index)=>Divider(height: 1,),),
-                ),
+        return Directionality(
+          textDirection:AppCubit.get(context).appDirection,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 1.0,
+              title: Text('${appLang(context).addresses}'),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.add_location_alt_outlined),
+                  onPressed: (){
+                    navigateTo(context: context, widget: AddNewAddress(update: false,));
+                  },
+                )
               ],
             ),
-            fallback: (context)=>Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  child: Icon(IconBroken.Location,size: 30,),
-                ),
-                TextButton(
-                  child: Text('${appLang(context).newAddress}'),
-                  onPressed: (){
-                    navigateTo(context: context, widget: AddNewAddress());
-                  },
-                ),
-              ],
-            ),),
+            body: ConditionalBuilder(
+              condition: addressModel!=null && addressModel.data.data.length>0,
+              builder: (context)=>Column(
+                children: [
+                  if(state is AddressLoadingState)
+                    LinearProgressIndicator(
+                      backgroundColor: Colors.grey[300],
+                      valueColor: AlwaysStoppedAnimation<Color>(btnColor),
+                    ),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: addressModel.data.data.length,
+                      itemBuilder: (context,index){
+                        return Slidable(
+                          actionPane: SlidableDrawerActionPane(),
+                          actionExtentRatio: 0.20,
+                          child: address(
+                              context: context,
+                              address: addressModel.data.data[index]),
+                          secondaryActions: [
+                            IconSlideAction(
+                              caption: '${appLang(context).edit}',
+                              color: Colors.green,
+                              icon: IconBroken.Edit,
+                              onTap: (){
+                                navigateTo(context: context, widget: AddNewAddress(
+                                  name: addressModel.data.data[index].name,
+                                  city : addressModel.data.data[index].city,
+                                  details : addressModel.data.data[index].details,
+                                  region: addressModel.data.data[index].region,
+                                  note: addressModel.data.data[index].notes,
+                                  id: addressModel.data.data[index].id,
+                                  lat:addressModel.data.data[index].latitude ,
+                                  long: addressModel.data.data[index].longitude,
+                                  update: true,
+                                ));
+                              },
+                            ),
+                            IconSlideAction(
+                              caption: '${appLang(context).delete}',
+                              color: btnColor,
+                              icon: IconBroken.Delete,
+                              onTap: (){
+                                AppCubit.get(context).deleteAdd(id: addressModel.data.data[index].id);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (context,index)=>Divider(height: 1,),),
+                  ),
+                ],
+              ),
+              fallback: (context)=>Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    child: Icon(IconBroken.Location,size: 30,),
+                  ),
+                  TextButton(
+                    child: Text('${appLang(context).newAddress}'),
+                    onPressed: (){
+                      navigateTo(context: context, widget: AddNewAddress());
+                    },
+                  ),
+                ],
+              ),),
+            ),
           ),
         );
       },

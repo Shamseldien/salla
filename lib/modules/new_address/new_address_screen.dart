@@ -44,7 +44,7 @@ class AddNewAddress extends StatelessWidget {
            textDirection: AppCubit.get(context).appDirection,
            child: Scaffold(
              appBar: AppBar(
-               title: Text(!this.update ? appLang(context).newAddress : 'Edit address'),
+               title: Text(!this.update ? appLang(context).newAddress : '${appLang(context).editAddress}'),
                elevation: 1.0,
              ),
              body:  Stack(
@@ -63,28 +63,28 @@ class AddNewAddress extends StatelessWidget {
                                  child: Column(
                                    children: [
                                      newAddressFormField(
-                                         labelText: 'Country',
-                                         errorText: 'name of address must not be empty',
+                                         labelText: '${appLang(context).country}',
+                                         errorText: '${appLang(context).countryError}',
                                          controller: nameCon
                                      ),
                                      newAddressFormField(
-                                         labelText: 'City',
-                                         errorText: 'city must not be empty',
+                                         labelText: '${appLang(context).city}',
+                                         errorText: '${appLang(context).cityError}',
                                          controller: cityCon
                                      ),
                                      newAddressFormField(
-                                         labelText: 'Region',
-                                         errorText: 'region must not be empty',
+                                         labelText: '${appLang(context).region}',
+                                         errorText: '${appLang(context).regionError}',
                                          controller: regionCon
                                      ),
                                      newAddressFormField(
-                                         labelText: 'Details',
-                                         errorText: 'details must not be empty',
+                                         labelText: '${appLang(context).details}',
+                                         errorText: '${appLang(context).detailsError}',
                                          controller: detailsCon
                                      ),
                                      newAddressFormField(
-                                         labelText: 'Notes',
-                                         errorText: 'please add some note for your address like Home, work ,etc...',
+                                         labelText: '${appLang(context).notes}',
+                                         errorText: '${appLang(context).notesError}',
                                          controller: notesCon
                                      ),
                                      SizedBox(height: 20,),
@@ -113,7 +113,7 @@ class AddNewAddress extends StatelessWidget {
                                          }),
                                    ),
                                    SizedBox(height: 10,),
-                                   Text('Select Current Location ?'),
+                                   Text('${appLang(context).currentLocation}'),
                                  ],
                                ),
 

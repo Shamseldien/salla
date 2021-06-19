@@ -89,10 +89,21 @@ class AppLanguageModel {
   String cam;
   String gallery;
   String noProduct;
-
-
-
-
+  String search;
+  String editAddress;
+  String country;
+  String countryError;
+  String city;
+  String cityError;
+  String region;
+  String regionError;
+  String details;
+  String detailsError;
+  String notes;
+  String notesError;
+  String currentLocation;
+  String delete;
+  String edit;
 
   AppLanguageModel(
       {this.title,
@@ -185,6 +196,26 @@ class AppLanguageModel {
         this.cam,
         this.gallery,
         this.noProduct,
+        this.search,
+
+        this.editAddress,
+        this.country,
+        this.countryError,
+        this.city,
+        this.cityError,
+        this.region,
+        this.regionError,
+        this.details,
+        this.detailsError,
+        this.notes,
+        this.notesError,
+        this.currentLocation,
+        this.edit,
+        this.delete,
+
+
+
+
 
       });
 
@@ -285,6 +316,23 @@ class AppLanguageModel {
     cam = json['cam'];
     gallery = json['gallery'];
     noProduct = json['noProduct'];
+    search = json['search'];
+
+    editAddress = json['editAddress'];
+    country = json['country'];
+    countryError = json['countryError'];
+    city = json['city'];
+    cityError = json['cityError'];
+    region = json['region'];
+    regionError = json['regionError'];
+    details = json['details'];
+    detailsError = json['detailsError'];
+    notes = json['notes'];
+    notesError = json['notesError'];
+    currentLocation = json['currentLocation'];
+    delete = json['delete'];
+    edit = json['edit'];
+
 
 
 

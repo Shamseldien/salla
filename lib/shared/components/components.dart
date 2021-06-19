@@ -497,87 +497,101 @@ Widget orderDetailsItem({context,OrderProducts order})=>Card(
   ),
 );
 
-Widget searchItem({SearchResults searchData,index,context})=>Card(
-  elevation: 2.0,
-  child: Padding(
-    padding: const EdgeInsets.all(15.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          height: 80,
-          width: 100,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage('${searchData.image}')
-              )
+Widget searchItem({SearchResults searchData,index,context})=>InkWell(
+  onTap: (){
+    navigateTo(context: context, widget: ProductInfo());
+    ProductInfoCubit.get(context)..getProductInfo(productId: searchData.id).then((value) {
+    });
+  },
+  child:   Card(
+    elevation: 2.0,
+    child: Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            height: 80,
+            width: 100,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage('${searchData.image}')
+                )
+            ),
           ),
-        ),
-        SizedBox(height: 5,),
-        Text('${searchData.name}',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: black14().copyWith(height: 1.5),
-        ),
-        Spacer(),
-        Row(
-          children: [
-            Text('${appLang(context).price}',),
-            Spacer(),
-            Text('${searchData.price} ${appLang(context).currency}',style: grey14(),),
-          ],
-        ),
+          SizedBox(height: 5,),
+          Text('${searchData.name}',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: black14().copyWith(height: 1.5),
+          ),
+          Spacer(),
+          Row(
+            children: [
+              Text('${appLang(context).price}',),
+              Spacer(),
+              Text('${searchData.price} ${appLang(context).currency}',style: grey14(),),
+            ],
+          ),
 
-      ],
+        ],
+      ),
     ),
   ),
 );
 
 
-Widget searchItemTwo({SearchResults searchData,index,context})=>Container(
-  child: Card(
-    child: Row(
-      children: [
-        Container(
-          // height: 30,
-          width: 65,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage('${searchData.image}')
-            )
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsetsDirectional.only(
-              top: 10,
-              end: 5,
-              bottom: 2,
-              start: 5
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${searchData.name}',maxLines: 2,overflow: TextOverflow.ellipsis,style: black14().copyWith(
-                  height: 1.5
-                ),),
-                SizedBox(height: 5,),
-                Row(
-                  children: [
-                    Text('${appLang(context).price}',maxLines: 2,overflow: TextOverflow.ellipsis,style: white12(),),
-                    SizedBox(width: 5,),
-                    Expanded(child: Text('${searchData.price.round()} ${appLang(context).currency}',style: grey12(),maxLines: 1,overflow: TextOverflow.ellipsis,)),
-                  ],
-                )
-              ],
+Widget searchItemTwo({SearchResults searchData,index,context})=>InkWell(
+  onTap: (){
+    navigateTo(context: context, widget: ProductInfo());
+    ProductInfoCubit.get(context)..getProductInfo(productId: searchData.id).then((value) {
+    });
+  },
+  child:   Container(
+    child: Card(
+      child: Row(
+        children: [
+          Container(
+            // height: 30,
+            width: 65,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage('${searchData.image}')
+              )
             ),
           ),
-        )
-      ],
+          Expanded(
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                top: 10,
+                end: 5,
+                bottom: 2,
+                start: 5
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${searchData.name}',maxLines: 2,overflow: TextOverflow.ellipsis,style: black14().copyWith(
+                    height: 1.5
+                  ),),
+                  SizedBox(height: 5,),
+                  Row(
+                    children: [
+                      Text('${appLang(context).price}',maxLines: 2,overflow: TextOverflow.ellipsis,style: white12(),),
+                      SizedBox(width: 5,),
+                      Expanded(child: Text('${searchData.price.round()} ${appLang(context).currency}',style: grey12(),maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     ),
   ),
 );
@@ -890,10 +904,12 @@ Widget settingsItem({text,iconColor,icon,function,suffix})=> ListTile(
 Widget boardingItem({@required BoardModel model, index,context}) => Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image(
-            image: AssetImage('${model.image}')),
+        Expanded(
+          child: Image(
+              image: AssetImage('${model.image}')),
+        ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(

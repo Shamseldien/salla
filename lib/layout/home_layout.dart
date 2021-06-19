@@ -46,12 +46,20 @@ class HomeLayout extends StatelessWidget {
                   : AppBar(
                       title: Row(
                         children: [
-                          Text(appLang(context).salla),
+                          Image(
+                            width: 70,
+                            image: AssetImage(
+                              AppCubit.get(context).isDark
+                                  ? 'assets/images/sallawhite.png'
+                                  :'assets/images/sallablack.png',
+                            ),
+
+                          ),
+
+                          // Text(appLang(context).salla),
                           SizedBox(
                             width: 10,
                           ),
-
-
                           Expanded(
                             child: TextFormField(
                               controller: searchCon,
@@ -59,11 +67,14 @@ class HomeLayout extends StatelessWidget {
                                 SearchCubit.get(context).getHistory();
                               },
                               decoration: InputDecoration(
-                                hintText: 'Search Product',
+                                hintText: '${appLang(context).search}',
                                 hintStyle: grey14(),
                                 isDense: true,
                                 isCollapsed: true,
-                                contentPadding: EdgeInsets.all(5.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 5.0,
+                                  horizontal: 15.0
+                                ),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                         color: btnColor.withOpacity(0.50))),
@@ -167,12 +178,12 @@ class HomeLayout extends StatelessWidget {
                        builder: (context,state){
                          return  Positioned(
                            top: -15,
-                           left: 0,
+                           left: 30,
                            right: 0,
                            child: Align(
                              alignment: Alignment.topCenter,
                              child: Container(
-                               width: 250,
+                               width: 210,
                                height: 200,
                                child: Card(
                                  child: Padding(

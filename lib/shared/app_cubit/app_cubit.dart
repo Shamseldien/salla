@@ -412,7 +412,7 @@ class AppCubit extends Cubit<AppStates> {
     //  emit(HomeLoadingState());
     if (userToken != null && userToken != '')
       repository.getFavorite(token: userToken).then((value) {
-       // print('favData==>>${value.data}');
+        print('favData==>>${value.data}');
         myFavoritesModel = MyFavoritesModel.fromJson(value.data);
         if (myFavoritesModel.status) {
           emit(AppStateSuccess());
