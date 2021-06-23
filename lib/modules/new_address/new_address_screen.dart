@@ -26,8 +26,8 @@ class AddNewAddress extends StatelessWidget {
   var id;
   var lat;
   var long;
-  bool update;
-  AddNewAddress({this.name,this.city,this.region,this.note,this.details,this.update,this.id,this.lat,this.long});
+  bool update ;
+  AddNewAddress({this.name,this.city,this.region,this.note,this.details,this.update = false,this.id,this.lat,this.long});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(create: (context)=>di<NewAddressCubit>(),
